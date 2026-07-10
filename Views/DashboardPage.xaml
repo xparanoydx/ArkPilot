@@ -1,0 +1,102 @@
+<Page x:Class="ArkPilot.Views.DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="clr-namespace:ArkPilot.Controls"
+      Background="{StaticResource BrushBackground}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Dashboard"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource BrushTextPrimary}"/>
+
+                    <TextBlock Text="Centre de supervision du serveur ARK"
+                               FontSize="14"
+                               Foreground="{StaticResource BrushTextSecondary}"/>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Background="{StaticResource BrushSuccess}"
+                        CornerRadius="12"
+                        Padding="12,6"
+                        VerticalAlignment="Center">
+
+                    <TextBlock x:Name="HeaderStatusText"
+                               Text="● EN LIGNE"
+                               Foreground="White"
+                               FontWeight="Bold"/>
+                </Border>
+            </Grid>
+
+            <WrapPanel Grid.Row="1"
+                       Margin="0,25,0,10">
+
+                <controls:StatCard x:Name="ServerCard"
+                                   Icon="🟢"
+                                   Title="Serveur"
+                                   Value="EN LIGNE"
+                                   Footer="Dernière MAJ : --"
+                                   AccentBrush="{StaticResource BrushSuccess}"/>
+
+                <controls:StatCard x:Name="PingCard"
+                                   Icon="📶"
+                                   Title="Ping"
+                                   Value="--"
+                                   Footer="Temps réel"
+                                   AccentBrush="{StaticResource BrushInfo}"/>
+
+                <controls:StatCard x:Name="PlayersCard"
+                                   Icon="👥"
+                                   Title="Joueurs"
+                                   Value="0"
+                                   Footer="Connectés"
+                                   AccentBrush="{StaticResource BrushSuccess}"/>
+
+                <controls:StatCard x:Name="UptimeCard"
+                                   Icon="⏱"
+                                   Title="Uptime"
+                                   Value="--"
+                                   Footer="Depuis connexion"
+                                   AccentBrush="{StaticResource BrushWarning}"/>
+
+                <controls:StatCard x:Name="SaveCard"
+                                   Icon="💾"
+                                   Title="Sauvegarde"
+                                   Value="--"
+                                   Footer="Dernière commande"
+                                   AccentBrush="{StaticResource BrushInfo}"/>
+
+                <controls:StatCard x:Name="RconCard"
+                                   Icon="🔌"
+                                   Title="RCON"
+                                   Value="Connecté"
+                                   Footer="Commande distante"
+                                   AccentBrush="{StaticResource BrushSuccess}"/>
+
+                <controls:StatCard x:Name="ApiCard"
+                                   Icon="🌐"
+                                   Title="API Nitrado"
+                                   Value="Non testée"
+                                   Footer="Prévue V12"
+                                   AccentBrush="{StaticResource BrushWarning}"/>
+
+            </WrapPanel>
+
+        </Grid>
+    </ScrollViewer>
+
+</Page>

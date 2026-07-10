@@ -1,0 +1,128 @@
+﻿<Page x:Class="ArkPilot.Views.BackupsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="clr-namespace:ArkPilot.Controls"
+      Background="{StaticResource BrushBackground}">
+
+    <Grid Margin="25">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <controls:PageHeader
+            x:Name="Header"/>
+
+        <!-- Statistiques -->
+        <WrapPanel Grid.Row="1"
+                   Margin="0,0,0,15">
+
+            <controls:StatCard
+                x:Name="LastBackupCard"
+                Icon="💾"
+                Title="Dernière sauvegarde"
+                Value="--"
+                Footer="Dernière exécution"
+                AccentBrush="{StaticResource BrushSuccess}"/>
+
+            <controls:StatCard
+                x:Name="ArchiveCard"
+                Icon="📦"
+                Title="Archives"
+                Value="0"
+                Footer="Sauvegardes locales"
+                AccentBrush="{StaticResource BrushInfo}"/>
+
+            <controls:StatCard
+                x:Name="SizeCard"
+                Icon="💽"
+                Title="Taille"
+                Value="0 MB"
+                Footer="Espace utilisé"
+                AccentBrush="{StaticResource BrushWarning}"/>
+
+            <controls:StatCard
+              x:Name="FtpCard"
+              Icon="🌐"
+              Title="FTP"
+              Value="--"
+              Footer="Etat de connexion"
+              AccentBrush="{StaticResource BrushInfo}">
+            </controls:StatCard>
+            
+        </WrapPanel>
+
+        <!-- Boutons -->
+        <Border Grid.Row="2"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="12"
+                Margin="0,0,0,15">
+
+            <WrapPanel>
+
+                <controls:ActionButton
+                    x:Name="QuickBackupButton"
+                    Icon="💾"
+                    Text="Sauvegarde rapide"/>
+
+                <controls:ActionButton
+                    x:Name="FullBackupButton"
+                    Icon="📦"
+                    Text="Sauvegarde complète"/>
+
+                <controls:ActionButton
+                    x:Name="OpenFolderButton"
+                    Icon="📂"
+                    Text="Ouvrir le dossier"/>
+
+                <controls:ActionButton
+                    x:Name="CleanButton"
+                    Icon="🗑"
+                    Text="Nettoyer"/>
+
+            </WrapPanel>
+
+        </Border>
+
+        <!-- Historique -->
+        <Border Grid.Row="3"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="12">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Text="📦 Historique des sauvegardes"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Margin="0,0,0,10"
+                    Foreground="{StaticResource BrushTextPrimary}"/>
+
+                <ListView
+                    x:Name="HistoryList"
+                    Grid.Row="1"
+                    BorderThickness="0"
+                    Background="Transparent"/>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</Page>

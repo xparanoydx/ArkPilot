@@ -1,0 +1,165 @@
+﻿<Page x:Class="ArkPilot.Views.ServerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBackground}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+        <Grid Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Serveur"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource BrushTextPrimary}"/>
+
+                    <TextBlock Text="Gestion du serveur ARK Survival Ascended"
+                               FontSize="14"
+                               Foreground="{StaticResource BrushTextSecondary}"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="🔄 Actualiser"
+                        Width="170"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Click="Refresh_Click"/>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    Margin="0,25,0,20"
+                    Padding="20"
+                    Background="{StaticResource BrushCard}"
+                    BorderBrush="{StaticResource BrushBorder}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+
+                <StackPanel>
+
+                    <TextBlock Text="Informations serveur"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource BrushTextPrimary}"
+                               Margin="0,0,0,15"/>
+
+                    <TextBlock x:Name="ServerStatusText"
+                               Text="État : --"
+                               Foreground="{StaticResource BrushTextPrimary}"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock x:Name="MapText"
+                               Text="Carte : --"
+                               Foreground="{StaticResource BrushTextPrimary}"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock x:Name="SlotsText"
+                               Text="Joueurs : --"
+                               Foreground="{StaticResource BrushTextPrimary}"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock x:Name="GameText"
+                               Text="Jeu : --"
+                               Foreground="{StaticResource BrushTextPrimary}"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Grid Grid.Row="2">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Margin="0,0,10,0"
+                        Padding="20"
+                        Background="{StaticResource BrushCard}"
+                        BorderBrush="{StaticResource BrushBorder}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Commandes RCON"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource BrushTextPrimary}"
+                                   Margin="0,0,0,15"/>
+
+                        <Button Content="💾 SaveWorld"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="SaveWorld_Click"/>
+
+                        <TextBox x:Name="BroadcastBox"
+                                 Height="42"
+                                 Margin="5,15,5,10"
+                                 Background="{StaticResource BrushBackground}"
+                                 Foreground="{StaticResource BrushTextPrimary}"
+                                 BorderBrush="{StaticResource BrushBorder}"
+                                 BorderThickness="1"/>
+
+                        <Button Content="📢 Broadcast"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="Broadcast_Click"/>
+
+                        <Button Content="☄ DestroyWildDinos"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Margin="5,15,5,5"
+                                Click="DestroyDinos_Click"/>
+
+                    </StackPanel>
+
+                </Border>
+
+                <Border Grid.Column="1"
+                        Margin="10,0,0,0"
+                        Padding="20"
+                        Background="{StaticResource BrushCard}"
+                        BorderBrush="{StaticResource BrushBorder}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+
+                    <StackPanel>
+
+                        <TextBlock Text="Commandes Nitrado"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource BrushTextPrimary}"
+                                   Margin="0,0,0,15"/>
+
+                        <Button Content="▶ Démarrer"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="StartServer_Click"/>
+
+                        <Button Content="⏹ Arrêter"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="StopServer_Click"/>
+
+                        <Button Content="🔄 Redémarrer"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="RestartServer_Click"/>
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</Page>

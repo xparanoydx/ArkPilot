@@ -1,0 +1,126 @@
+﻿<Page x:Class="ArkPilot.Views.PlayersPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBackground}">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="Joueurs"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource BrushTextPrimary}"/>
+
+                <TextBlock Text="Gestion des joueurs connectés au serveur"
+                           FontSize="14"
+                           Foreground="{StaticResource BrushTextSecondary}"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Content="🔄 Actualiser"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Width="170"
+                    Click="RefreshPlayersButton_Click"/>
+        </Grid>
+
+        <Border Grid.Row="1"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                Margin="0,25,0,15">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="SearchBox"
+                         Height="38"
+                         Width="260"
+                         ToolTip="Rechercher un joueur..."
+                         Background="{StaticResource BrushBackground}"
+                         Foreground="{StaticResource BrushTextPrimary}"
+                         BorderBrush="{StaticResource BrushBorder}"
+                         BorderThickness="1"
+                         TextChanged="SearchBox_TextChanged"/>
+
+                <TextBlock x:Name="PlayerCountText"
+                           Grid.Column="1"
+                           Text="👥 Joueurs connectés : 0"
+                           Foreground="{StaticResource BrushTextPrimary}"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+
+                <TextBlock x:Name="ServerStatus"
+                           Grid.Column="2"
+                           Text="🟡 Vérification..."
+                           Foreground="{StaticResource BrushTextPrimary}"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+
+                <TextBlock x:Name="LastUpdate"
+                           Grid.Column="3"
+                           Text="Dernière mise à jour : --"
+                           Foreground="{StaticResource BrushTextSecondary}"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+            </Grid>
+
+        </Border>
+
+        <DataGrid x:Name="PlayersGrid"
+                  Grid.Row="2"
+                  Style="{StaticResource ModernDataGridStyle}"
+                  AutoGenerateColumns="False">
+
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="📋 Copier ID"
+                              Click="CopyId_Click"/>
+                    <MenuItem Header="👢 Kick"
+                              Click="KickButton_Click"/>
+                    <MenuItem Header="🔨 Ban"
+                              Click="BanButton_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nom"
+                                    Binding="{Binding Name}"
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="EOS / Steam ID"
+                                    Binding="{Binding Id}"
+                                    Width="320"/>
+
+                <DataGridTextColumn Header="Tribu"
+                                    Binding="{Binding Tribe}"
+                                    Width="180"/>
+
+                <DataGridTextColumn Header="Niveau"
+                                    Binding="{Binding Level}"
+                                    Width="100"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</Page>

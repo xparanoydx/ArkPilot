@@ -1,0 +1,124 @@
+﻿<Page x:Class="ArkPilot.Views.FtpExplorerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="clr-namespace:ArkPilot.Controls"
+      Background="{StaticResource BrushBackground}">
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader x:Name="Header"/>
+
+        <WrapPanel Grid.Row="1" Margin="0,0,0,15">
+            <controls:StatCard x:Name="FoldersCard"
+                   Icon="📁"
+                   Title="Dossiers"
+                   Value="0"
+                   Footer="Dossier actuel"
+                   AccentBrush="{StaticResource BrushInfo}"/>
+
+            <controls:StatCard x:Name="FilesCard"
+                   Icon="📄"
+                   Title="Fichiers"
+                   Value="0"
+                   Footer="Dossier actuel"
+                   AccentBrush="{StaticResource BrushSuccess}"/>
+
+            <controls:StatCard x:Name="SizeCard"
+                   Icon="💾"
+                   Title="Taille"
+                   Value="0 B"
+                   Footer="Total affiché"
+                   AccentBrush="{StaticResource BrushWarning}"/>
+        </WrapPanel>
+
+        <Border Grid.Row="2"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="12"
+                Margin="0,0,0,15">
+
+            <StackPanel Orientation="Horizontal">
+
+                <controls:ActionButton x:Name="BackButton"
+                                       Icon="⬅"
+                                       Text="Retour"/>
+
+                <controls:ActionButton x:Name="RefreshButton"
+                                       Icon="🔄"
+                                       Text="Actualiser"/>
+
+                <controls:ActionButton x:Name="DownloadButton"
+                                       Icon="📥"
+                                       Text="Télécharger"/>
+
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="10">
+
+            <ListView x:Name="FilesList"
+                      BorderThickness="0"
+                      Background="Transparent"
+                      Foreground="{StaticResource BrushTextPrimary}">
+
+                <ListView.View>
+                    <GridView>
+
+                        <GridViewColumn Header="Nom" Width="500">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="6">
+                                        <TextBlock Text="{Binding Icon}"
+                                                   FontSize="18"
+                                                   Margin="0,0,10,0"/>
+
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource BrushTextPrimary}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="Taille"
+                                        Width="140"
+                                        DisplayMemberBinding="{Binding SizeText}"/>
+
+                        <GridViewColumn Header="Modifié"
+                                        Width="190"
+                                        DisplayMemberBinding="{Binding ModifiedText}"/>
+
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
+
+        <Border Grid.Row="4"
+                Margin="0,15,0,0"
+                Padding="12"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="10">
+
+            <TextBlock x:Name="PathText"
+                       Text="📍 /"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource BrushTextPrimary}"/>
+        </Border>
+    </Grid>
+</Page>
