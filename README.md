@@ -51,9 +51,33 @@ Screenshot coming soon.
 
 ## 🚀 Installation
 
-1. Download the latest archive from the GitHub Releases page.
-2. Extract the entire ZIP archive.
-3. Launch:
+1. Download the latest release from the **Releases** page.
+2. Extract the ZIP archive.
+3. Copy:
+
+```text
+Templates/appsettings.example.json
+```
+
+to:
+
+```text
+appsettings.json
+```
+
+4. Edit `appsettings.json` and enter your:
+
+- Server IP
+- RCON password
+- Nitrado Service ID
+- Nitrado API Token
+
+5. Launch:
 
 ```text
 ArkPilot.exe
+```
+
+ArkPilot is distributed as a **self-contained Windows x64 application**.
+
+No .NET installation is required.
