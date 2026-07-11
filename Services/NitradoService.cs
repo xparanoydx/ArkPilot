@@ -36,7 +36,6 @@ namespace ArkPilot.Services
 
             try
             {
-                LogService.Info("Lecture de l'état Nitrado");
 
                 var api = CreateApi();
 

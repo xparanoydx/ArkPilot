@@ -29,19 +29,48 @@ namespace ArkPilot.Managers
                 Ping = _monitor.Ping,
                 Players = _monitor.PlayerCount,
                 Uptime = GetUptime(),
-                LastBackup = GetLastBackup()
+                LastBackup = GetLastBackup(),
+                ApiStatus = "--",
+                Map = "--",
+                Game = "--"
             };
 
-            if (_nitradoService != null)
+            if (_nitradoService == null)
+                return info;
+
+            try
             {
                 var nitradoInfo =
                     await _nitradoService.GetServerInfoAsync();
 
-                info.ApiStatus = NormalizeStatus(nitradoInfo.Status);
-                info.Map = NormalizeMap(nitradoInfo.Map);
-                info.Game = NormalizeGame(nitradoInfo.Version);
-                info.SlotsUsed = nitradoInfo.SlotsUsed;
-                info.SlotsMax = nitradoInfo.SlotsMax;
+                if (nitradoInfo == null)
+                    return info;
+
+                info.ApiStatus =
+                    NormalizeStatus(nitradoInfo.Status);
+
+                info.Map =
+                    NormalizeMap(nitradoInfo.Map);
+
+                info.Game =
+                    NormalizeGame(nitradoInfo.Version);
+
+                info.SlotsUsed =
+                    nitradoInfo.SlotsUsed;
+
+                info.SlotsMax =
+                    nitradoInfo.SlotsMax;
+            }
+            catch (Exception ex)
+            {
+                LogService.Warning(
+                    $"Dashboard API Nitrado indisponible : {ex.Message}");
+
+                info.ApiStatus = "Indisponible";
+                info.Map = "--";
+                info.Game = "--";
+                info.SlotsUsed = 0;
+                info.SlotsMax = 0;
             }
 
             return info;
@@ -52,7 +81,8 @@ namespace ArkPilot.Managers
             if (_monitor.ConnectedSince == default)
                 return "--";
 
-            TimeSpan uptime = DateTime.Now - _monitor.ConnectedSince;
+            TimeSpan uptime =
+                DateTime.Now - _monitor.ConnectedSince;
 
             return $"{uptime:hh\\:mm\\:ss}";
         }
@@ -65,12 +95,18 @@ namespace ArkPilot.Managers
                 return "--";
             }
 
-            return _backupService.LastBackupTime.ToString("HH:mm:ss");
+            return _backupService
+                .LastBackupTime
+                .ToString("HH:mm:ss");
         }
 
-        private static string NormalizeStatus(string status)
+        private static string NormalizeStatus(
+            string? status)
         {
-            return status.ToLower() switch
+            if (string.IsNullOrWhiteSpace(status))
+                return "--";
+
+            return status.ToLowerInvariant() switch
             {
                 "started" => "Started",
                 "stopped" => "Stopped",
@@ -79,14 +115,25 @@ namespace ArkPilot.Managers
             };
         }
 
-        private static string NormalizeMap(string map)
+        private static string NormalizeMap(
+            string? map)
         {
-            return map.Replace("_WP", "");
+            if (string.IsNullOrWhiteSpace(map))
+                return "--";
+
+            return map.Replace(
+                "_WP",
+                "",
+                StringComparison.OrdinalIgnoreCase);
         }
 
-        private static string NormalizeGame(string game)
+        private static string NormalizeGame(
+            string? game)
         {
-            return game.ToLower() switch
+            if (string.IsNullOrWhiteSpace(game))
+                return "--";
+
+            return game.ToLowerInvariant() switch
             {
                 "arksa" => "ARK Survival Ascended",
                 _ => game

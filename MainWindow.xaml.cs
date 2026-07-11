@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ArkPilot.Helpers;
 using ArkPilot.Core;
+using System.Threading.Tasks;
 
 
 namespace ArkPilot
@@ -19,13 +20,17 @@ namespace ArkPilot
 
         public RconEngine Rcon => rcon;
 
-        public ServerMonitor Monitor => monitor;
+        public ServerMonitor? Monitor => monitor;
 
         private readonly ArkService ark;
+        private readonly BackupService backupService;
+
+        public BackupService BackupService =>
+            backupService;
 
         private NavigationService navigation;
 
-        private ServerMonitor monitor;
+        private ServerMonitor? monitor;
 
         private readonly DispatcherTimer statusTimer = new();
 
@@ -43,9 +48,10 @@ namespace ArkPilot
 
             rcon = new RconEngine(rawRcon);
 
-
             ark = new ArkService(rcon);
 
+            backupService =
+                new BackupService(ark);
 
 
             // =========================
@@ -65,14 +71,14 @@ namespace ArkPilot
                         LogList.Items[^1]);
                 });
             }
-
+        
             LogService.OnLog += AddLog;
 
             // =========================
             // CLOCK
             // =========================
 
-            statusTimer.Interval =
+           statusTimer.Interval =
                 TimeSpan.FromSeconds(1);
 
 
@@ -216,6 +222,62 @@ namespace ArkPilot
 
 
 
+        // =========================
+        // INITIALISATION MONITOR
+        // =========================
+
+        private async Task<bool> EnsureMonitorAsync()
+        {
+            if (monitor != null)
+                return true;
+
+            var config =
+                ConfigManager.Load();
+
+            if (string.IsNullOrWhiteSpace(config.ServerIp) ||
+                string.IsNullOrWhiteSpace(config.RconPassword))
+            {
+                StatusRcon.Text =
+                    "🟡 Configuration requise";
+
+                return false;
+            }
+
+            monitor =
+                new ServerMonitor(
+                    rcon,
+                    config.ServerIp,
+                    config.RconPort,
+                    config.RconPassword);
+
+            monitor.Updated +=
+                Monitor_Updated;
+
+            bool connected =
+                await rcon.Connect(
+                    config.ServerIp,
+                    config.RconPort,
+                    config.RconPassword);
+
+            if (connected)
+            {
+                monitor.Start();
+            }
+
+            StatusRcon.Text =
+                connected
+                    ? "🟢 RCON : Connecté"
+                    : "🔴 RCON : Déconnecté";
+
+            StatusNitrado.Text =
+                connected
+                    ? "🟢 Serveur prêt"
+                    : "🟠 Vérifiez la configuration";
+
+            return true;
+        }
+
+
 
 
         // =========================
@@ -232,14 +294,24 @@ namespace ArkPilot
 
 
 
-        private void Dashboard_Click(
+        private async void Dashboard_Click(
             object sender,
             RoutedEventArgs e)
         {
+            bool ready =
+                await EnsureMonitorAsync();
+
+            if (!ready)
+            {
+                navigation.Navigate(
+                    new SettingsPage(rcon));
+
+                return;
+            }
+
             navigation.Navigate(
                 new DashboardPage(rcon));
         }
-
 
 
         private void Players_Click(

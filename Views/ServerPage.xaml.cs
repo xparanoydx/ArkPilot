@@ -27,8 +27,13 @@ namespace ArkPilot.Views
                 ((MainWindow)Application.Current.MainWindow)
                 .Monitor;
 
+            var mainWindow =
+                (MainWindow)Application.Current.MainWindow;
+
             ark = new ArkService(rcon);
-            backupService = new BackupService(ark);
+
+            backupService =
+                mainWindow.BackupService;
 
             var config = ConfigManager.Load();
             nitradoService = new NitradoService(config);
@@ -77,7 +82,7 @@ namespace ArkPilot.Views
             backupService.SaveNow();
         }
 
-        private void Broadcast_Click(
+        private async void Broadcast_Click(
             object sender,
             RoutedEventArgs e)
         {
@@ -87,11 +92,30 @@ namespace ArkPilot.Views
             if (string.IsNullOrWhiteSpace(message))
                 return;
 
-            ark.Broadcast(message);
+            string result =
+                await ark.BroadcastAsync(message);
+
+            if (result == "RCON_OFFLINE")
+            {
+                LogService.Error(
+                    "Message impossible : RCON hors ligne");
+
+                return;
+            }
+
+            if (result == "TIMEOUT" ||
+                result == "RCON_ERROR")
+            {
+                LogService.Error(
+                    "Échec de l'envoi du message serveur");
+
+                return;
+            }
 
             BroadcastBox.Clear();
 
-            LogService.Info("Broadcast envoyé");
+            LogService.Success(
+                $"Message serveur envoyé : {message}");
         }
 
         private void DestroyDinos_Click(

@@ -96,9 +96,6 @@ namespace ArkPilot.Views
                 CommandBox.Text.Trim();
 
 
-            AddLog(
-                $"> {command}");
-
 
             rcon.Send(command);
 

@@ -29,17 +29,17 @@ namespace ArkPilot.Views
             var mainWindow =
                 (MainWindow)Application.Current.MainWindow;
 
-            var ark =
-                new ArkService(mainWindow.Rcon);
-
             var backupService =
-                new BackupService(ark);
+                mainWindow.BackupService;
 
             var taskQueue =
                 new TaskQueueService();
 
             var config =
-    ConfigManager.Load();
+                ConfigManager.Load();
+
+            var nitradoService =
+                new NitradoService(config);
 
             var ftpService =
                 new FtpService(
@@ -59,7 +59,9 @@ namespace ArkPilot.Views
                     backupService,
                     taskQueue,
                     transferManager,
-                    zipService);
+                    zipService,
+                    ftpService,
+                    nitradoService);
 
             UpdateBackupInfo();
             RefreshHistory();
