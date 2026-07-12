@@ -15,7 +15,7 @@
 		<Title>ArkPilot</Title>
 		<Description>Modern Windows manager for ARK: Survival Ascended servers.</Description>
 		<Authors>Damien Dechaume</Authors>
-		<Version>12.6.1</Version>
+		<Version>12.7.0</Version>
 
 		<ApplicationIcon>Assets\Images\ArkPilot.ico</ApplicationIcon>
 	</PropertyGroup>
@@ -23,8 +23,6 @@
 	<ItemGroup>
 		<PackageReference Include="CoreRCON" Version="5.4.2" />
 		<PackageReference Include="FluentFTP" Version="54.2.0" />
-		<PackageReference Include="LiveChartsCore.SkiaSharpView.WPF"
-						  Version="2.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

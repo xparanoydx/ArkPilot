@@ -87,7 +87,68 @@
 
             <Separator Margin="0,10"/>
 
-			<CheckBox x:Name="AutoConnectBox"
+            <TextBlock Text="🤖 Automation"
+           FontSize="18"
+           FontWeight="Bold"
+           Foreground="White"
+           Margin="0,10,0,15"/>
+
+
+            <CheckBox x:Name="AutoSaveBox"
+          Content="Activer la sauvegarde automatique"
+          Foreground="White"
+          Margin="0,5,0,10"/>
+
+
+            <StackPanel Orientation="Horizontal"
+            Margin="0,0,0,15">
+
+                <TextBlock Text="Intervalle sauvegarde (min)"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+
+                <TextBox x:Name="AutoSaveIntervalBox"
+             Width="60"
+             Height="30"
+             Margin="20,0,0,0"/>
+
+            </StackPanel>
+
+
+            <CheckBox x:Name="AutoRestartBox"
+          Content="Activer le redémarrage automatique"
+          Foreground="White"
+          Margin="0,5,0,10"/>
+
+
+            <StackPanel Orientation="Horizontal"
+            Margin="0,0,0,15">
+
+                <TextBlock Text="Heure redémarrage"
+               Foreground="White"
+               VerticalAlignment="Center"/>
+
+                <TextBox x:Name="AutoRestartHourBox"
+             Width="45"
+             Height="30"
+             Margin="20,0,0,0"/>
+
+                <TextBlock Text=":"
+               Foreground="White"
+               FontSize="18"
+               Margin="5,0"
+               VerticalAlignment="Center"/>
+
+                <TextBox x:Name="AutoRestartMinuteBox"
+             Width="45"
+             Height="30"/>
+
+            </StackPanel>
+
+
+            <Separator Margin="0,10"/>
+
+            <CheckBox x:Name="AutoConnectBox"
                       Content="Connexion automatique au démarrage"
                       Foreground="White"
                       Margin="0,10"/>

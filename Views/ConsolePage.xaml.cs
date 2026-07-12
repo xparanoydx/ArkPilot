@@ -50,6 +50,14 @@ namespace ArkPilot.Views
             string command,
             string response)
         {
+            if (command.Equals(
+                "ListPlayers",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+
             Dispatcher.Invoke(() =>
             {
                 AddLog(
@@ -59,7 +67,6 @@ namespace ArkPilot.Views
                     response);
             });
         }
-
 
 
         private void AddLog(string text)

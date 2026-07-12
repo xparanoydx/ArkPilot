@@ -4,6 +4,8 @@ using ArkPilot.Models;
 using ArkPilot.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System.Diagnostics;
+using System.IO;
 
 namespace ArkPilot.Views
 {
@@ -53,6 +55,27 @@ namespace ArkPilot.Views
             RefreshButton.Click += async (_, __) =>
             {
                 await RefreshAsync();
+            };
+
+            OpenDownloadsButton.Click += (_, __) =>
+            {
+                string downloadsFolder =
+                    Path.Combine(
+                        Environment.GetFolderPath(
+                            Environment.SpecialFolder.MyDocuments),
+                        "ArkPilot",
+                        "Downloads");
+
+                Directory.CreateDirectory(
+                    downloadsFolder);
+
+
+                Process.Start(
+                    new ProcessStartInfo
+                    {
+                        FileName = downloadsFolder,
+                        UseShellExecute = true
+                    });
             };
 
             DownloadButton.Click += async (_, __) =>

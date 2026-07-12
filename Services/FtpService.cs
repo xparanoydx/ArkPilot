@@ -157,6 +157,52 @@ namespace ArkPilot.Services
             }
         }
 
+        public async Task<bool> UploadFileAsync(
+    string localPath,
+    string remotePath)
+        {
+            try
+            {
+                if (!await ConnectAsync())
+                    return false;
+
+
+                var status =
+                    await client!.UploadFile(
+                        localPath,
+                        remotePath,
+                        FtpRemoteExists.Overwrite,
+                        true,
+                        FtpVerify.None);
+
+
+                bool success =
+                    status == FtpStatus.Success;
+
+
+                if (success)
+                {
+                    LogService.Success(
+                        $"Upload terminé : {remotePath}");
+                }
+                else
+                {
+                    LogService.Warning(
+                        $"Upload incomplet : {remotePath}");
+                }
+
+
+                return success;
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(
+                    $"Upload FTP impossible : {ex.Message}");
+
+                return false;
+            }
+        }
+
         public void Dispose()
         {
             _ = DisconnectAsync();
