@@ -13,13 +13,19 @@ namespace ArkPilot.Views
         private ServerConfig config;
         private readonly RconEngine rcon;
 
+        private readonly AutomationService automation;
+
         private bool passwordVisible = false;
 
-        public SettingsPage(RconEngine engine)
+        public SettingsPage(
+            RconEngine engine,
+            AutomationService automationService)
         {
             InitializeComponent();
 
             rcon = engine;
+
+            automation = automationService;
 
             config = ConfigManager.Load();
 
@@ -44,6 +50,21 @@ namespace ArkPilot.Views
 
             AutoConnectBox.IsChecked = config.AutoConnect;
 
+            AutoSaveBox.IsChecked =
+    config.AutoSaveEnabled;
+
+            AutoSaveIntervalBox.Text =
+                config.AutoSaveIntervalMinutes.ToString();
+
+            AutoRestartBox.IsChecked =
+                config.AutoRestartEnabled;
+
+            AutoRestartHourBox.Text =
+                config.AutoRestartHour.ToString();
+
+            AutoRestartMinuteBox.Text =
+                config.AutoRestartMinute.ToString();
+
             RefreshBox.Text =
                 config.RefreshInterval.ToString();
 
@@ -61,7 +82,9 @@ namespace ArkPilot.Views
         // SAUVEGARDE
         // =========================
 
-        private void Save_Click(object sender, RoutedEventArgs e)
+        private async void Save_Click(
+            object sender,
+            RoutedEventArgs e)
         {
             try
             {
@@ -105,6 +128,85 @@ namespace ArkPilot.Views
                 config.AutoConnect =
                     AutoConnectBox.IsChecked == true;
 
+                config.AutoSaveEnabled =
+    AutoSaveBox.IsChecked == true;
+
+
+                if (!int.TryParse(
+                    AutoSaveIntervalBox.Text,
+                    out int autoSaveInterval))
+                {
+                    StatusError(
+                        "Intervalle de sauvegarde invalide");
+
+                    return;
+                }
+
+
+                config.AutoSaveIntervalMinutes =
+                    autoSaveInterval;
+
+                if (autoSaveInterval < 1)
+                {
+                    StatusError(
+                        "L'intervalle de sauvegarde doit être supérieur à 0");
+
+                    return;
+                }
+
+
+                config.AutoRestartEnabled =
+                    AutoRestartBox.IsChecked == true;
+
+
+                if (!int.TryParse(
+                    AutoRestartHourBox.Text,
+                    out int autoRestartHour))
+                {
+                    StatusError(
+                        "Heure de redémarrage invalide");
+
+                    return;
+                }
+
+
+                if (!int.TryParse(
+                    AutoRestartMinuteBox.Text,
+                    out int autoRestartMinute))
+                {
+                    StatusError(
+                        "Minute de redémarrage invalide");
+
+                    return;
+                }
+
+
+                if (autoRestartHour < 0 ||
+                    autoRestartHour > 23)
+                {
+                    StatusError(
+                        "L'heure de redémarrage doit être comprise entre 0 et 23");
+
+                    return;
+                }
+
+
+                if (autoRestartMinute < 0 ||
+                    autoRestartMinute > 59)
+                {
+                    StatusError(
+                        "La minute de redémarrage doit être comprise entre 0 et 59");
+
+                    return;
+                }
+
+
+                config.AutoRestartHour =
+                    autoRestartHour;
+
+                config.AutoRestartMinute =
+                    autoRestartMinute;
+
                 config.FtpHost = FtpHostBox.Text.Trim();
                 config.FtpUser = FtpUserBox.Text.Trim();
                 config.FtpPassword = FtpPasswordBox.Password;
@@ -115,14 +217,36 @@ namespace ArkPilot.Views
                     return;
                 }
 
-                config.FtpPort = ftpPort;
-
-
                 ConfigManager.Save(config);
+
+                automation.ReloadConfig();
+
+
+                if (Application.Current.MainWindow is MainWindow mainWindow)
+                {
+                    bool connected =
+                        await mainWindow.InitializeServerAsync();
+
+
+                    if (connected)
+                    {
+                        StatusOK(
+                            "✔ Configuration sauvegardée et serveur connecté");
+                    }
+                    else
+                    {
+                        StatusError(
+                            "Configuration sauvegardée mais connexion RCON impossible");
+                    }
+
+
+                    return;
+                }
 
 
                 StatusOK(
                     "✔ Configuration sauvegardée");
+
             }
             catch (Exception ex)
             {

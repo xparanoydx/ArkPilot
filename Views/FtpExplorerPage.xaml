@@ -56,6 +56,10 @@
                                        Icon="🔄"
                                        Text="Actualiser"/>
 
+                <controls:ActionButton x:Name="OpenDownloadsButton"
+                                        Icon="📂"
+                                        Text="Dossier téléchargements"/>
+                
                 <controls:ActionButton x:Name="DownloadButton"
                                        Icon="📥"
                                        Text="Télécharger"/>
@@ -75,6 +79,37 @@
                       Background="Transparent"
                       Foreground="{StaticResource BrushTextPrimary}">
 
+                <ListView.Resources>
+
+                    <Style TargetType="ListViewItem">
+
+                        <Setter Property="Foreground"
+                Value="{StaticResource BrushTextPrimary}"/>
+
+                        <Style.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                     Value="True">
+
+                                <Setter Property="Foreground"
+                        Value="Black"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsSelected"
+                     Value="True">
+
+                                <Setter Property="Foreground"
+                        Value="Black"/>
+
+                            </Trigger>
+
+                        </Style.Triggers>
+
+                    </Style>
+
+                </ListView.Resources>
+
                 <ListView.View>
                     <GridView>
 
@@ -87,8 +122,10 @@
                                                    Margin="0,0,10,0"/>
 
                                         <TextBlock Text="{Binding Name}"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="{StaticResource BrushTextPrimary}"/>
+                                            FontWeight="SemiBold"
+                                            Foreground="{Binding Foreground,
+                                            RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
+                                        
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

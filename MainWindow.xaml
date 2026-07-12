@@ -99,6 +99,10 @@ Style="{StaticResource SidebarButtonStyle}"        Click="Players_Click"/>
                     <Button Content="💾 Sauvegardes"
 Style="{StaticResource SidebarButtonStyle}"        Click="Backups_Click"/>
 
+                    <Button Content="🎉 Événements"
+        Style="{StaticResource SidebarButtonStyle}"
+        Click="Events_Click"/>
+
                     <Button Content="🖥 Console RCON"
 Style="{StaticResource SidebarButtonStyle}"        Click="Console_Click"/>
 

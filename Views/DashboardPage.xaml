@@ -29,17 +29,21 @@
                                Foreground="{StaticResource BrushTextSecondary}"/>
                 </StackPanel>
 
-                <Border Grid.Column="1"
-                        Background="{StaticResource BrushSuccess}"
+                <Border x:Name="HeaderStatusBadge"
+                        Grid.Column="1"
+                        Background="Transparent"
+                        BorderBrush="{StaticResource BrushSuccess}"
+                        BorderThickness="1"
                         CornerRadius="12"
                         Padding="12,6"
                         VerticalAlignment="Center">
 
                     <TextBlock x:Name="HeaderStatusText"
-                               Text="● EN LIGNE"
-                               Foreground="White"
-                               FontWeight="Bold"/>
+                        Text="● EN LIGNE"
+                        Foreground="White"
+                        FontWeight="Bold"/>
                 </Border>
+                
             </Grid>
 
             <WrapPanel Grid.Row="1"

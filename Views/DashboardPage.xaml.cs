@@ -64,19 +64,39 @@ namespace ArkPilot.Views
             {
                 if (info.Online)
                 {
-                    HeaderStatusText.Text = "● EN LIGNE";
+                    HeaderStatusText.Text =
+                        "● EN LIGNE";
+
+                    HeaderStatusText.Foreground =
+                        Brushes.White;
+
+                    HeaderStatusBadge.BorderBrush =
+                        (Brush)FindResource("BrushSuccess");
+
 
                     ServerCard.Icon = "🟢";
                     ServerCard.Value = "EN LIGNE";
-                    ServerCard.AccentBrush = (Brush)FindResource("BrushSuccess");
+
+                    ServerCard.AccentBrush =
+                        (Brush)FindResource("BrushSuccess");
                 }
                 else
                 {
-                    HeaderStatusText.Text = "● HORS LIGNE";
+                    HeaderStatusText.Text =
+                        "● HORS LIGNE";
+
+                    HeaderStatusText.Foreground =
+                        Brushes.White;
+
+                    HeaderStatusBadge.BorderBrush =
+                        (Brush)FindResource("BrushError");
+
 
                     ServerCard.Icon = "🔴";
                     ServerCard.Value = "HORS LIGNE";
-                    ServerCard.AccentBrush = (Brush)FindResource("BrushError");
+
+                    ServerCard.AccentBrush =
+                        (Brush)FindResource("BrushError");
                 }
 
                 ServerCard.Footer =

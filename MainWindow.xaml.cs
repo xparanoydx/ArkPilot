@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ArkPilot.Helpers;
 using ArkPilot.Core;
+using System.Threading.Tasks;
 
 
 namespace ArkPilot
@@ -16,16 +17,17 @@ namespace ArkPilot
     {
         private readonly RconClient rawRcon = new();
         private readonly RconEngine rcon;
+        private readonly AutomationService _automation;
 
         public RconEngine Rcon => rcon;
 
-        public ServerMonitor Monitor => monitor;
+        public ServerMonitor? Monitor => monitor;
 
         private readonly ArkService ark;
 
         private NavigationService navigation;
 
-        private ServerMonitor monitor;
+        private ServerMonitor? monitor;
 
         private readonly DispatcherTimer statusTimer = new();
 
@@ -43,10 +45,11 @@ namespace ArkPilot
 
             rcon = new RconEngine(rawRcon);
 
-
             ark = new ArkService(rcon);
 
-
+            _automation = new AutomationService(
+                rcon,
+                ConfigManager.Load());
 
             // =========================
             // LOG SYSTEM
@@ -67,6 +70,8 @@ namespace ArkPilot
             }
 
             LogService.OnLog += AddLog;
+
+            _automation.OnLog += AddLog;
 
             // =========================
             // CLOCK
@@ -100,9 +105,8 @@ namespace ArkPilot
             object sender,
             RoutedEventArgs e)
         {
-            var config =
+            ServerConfig config =
                 ConfigManager.Load();
-
 
 
             if (string.IsNullOrWhiteSpace(config.ServerIp) ||
@@ -113,41 +117,17 @@ namespace ArkPilot
 
 
                 navigation.Navigate(
-                    new SettingsPage(rcon));
+                    new SettingsPage(
+                        rcon,
+                        _automation));
 
 
                 return;
             }
 
 
-
-            monitor =
-                new ServerMonitor(
-                    rcon,
-                    config.ServerIp,
-                    config.RconPort,
-                    config.RconPassword);
-
-
-
-            monitor.Updated +=
-                Monitor_Updated;
-
-
-
             bool connected =
-                await rcon.Connect(
-                    config.ServerIp,
-                    config.RconPort,
-                    config.RconPassword);
-
-
-
-            if (connected)
-            {
-                monitor.Start();
-            }
-
+                await InitializeServerAsync();
 
 
             StatusRcon.Text =
@@ -162,11 +142,62 @@ namespace ArkPilot
                 : "🟠 Vérifiez la configuration";
 
 
-
             navigation.Navigate(
                 connected
                 ? new DashboardPage(rcon)
-                : new SettingsPage(rcon));
+                : new SettingsPage(
+                    rcon,
+                    _automation));
+        }
+
+        // =========================
+        // INITIALIZE SERVER
+        // =========================
+
+        public async Task<bool> InitializeServerAsync()
+        {
+            ServerConfig config =
+                ConfigManager.Load();
+
+
+            if (string.IsNullOrWhiteSpace(config.ServerIp) ||
+                string.IsNullOrWhiteSpace(config.RconPassword))
+            {
+                return false;
+            }
+
+
+            if (monitor == null)
+            {
+                monitor =
+                    new ServerMonitor(
+                        rcon,
+                        config.ServerIp,
+                        config.RconPort,
+                        config.RconPassword);
+
+
+                monitor.Updated +=
+                    Monitor_Updated;
+            }
+
+
+            bool connected =
+                await rcon.Connect(
+                    config.ServerIp,
+                    config.RconPort,
+                    config.RconPassword);
+
+
+            if (connected)
+            {
+                monitor.Start();
+
+                _automation.Start();
+            }
+
+
+            return connected;
         }
 
 
@@ -257,7 +288,9 @@ namespace ArkPilot
             RoutedEventArgs e)
         {
             navigation.Navigate(
-                new SettingsPage(rcon));
+                new SettingsPage(
+                 rcon,
+                  _automation));
         }
 
 
@@ -277,6 +310,15 @@ namespace ArkPilot
         {
             navigation.Navigate(
                 new BackupsPage());
+        }
+
+        private void Events_Click(
+    object sender,
+    RoutedEventArgs e)
+        {
+            navigation.Navigate(
+                new EventsPage(
+                    _automation));
         }
 
 
@@ -314,12 +356,13 @@ namespace ArkPilot
 
             monitor?.Stop();
 
+            _automation.Stop();
+
             rcon.Stop();
 
 
             base.OnClosing(e);
         }
-
 
 
         protected override void OnClosed(

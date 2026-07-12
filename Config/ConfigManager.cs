@@ -60,8 +60,71 @@ namespace ArkPilot.Config
                 FtpPassword =
                     CryptoService.Encrypt(config.FtpPassword),
 
+                AutoSaveEnabled = config.AutoSaveEnabled,
+                AutoSaveIntervalMinutes = config.AutoSaveIntervalMinutes,
+
+                AutoRestartEnabled = config.AutoRestartEnabled,
+                AutoRestartHour = config.AutoRestartHour,
+                AutoRestartMinute = config.AutoRestartMinute,
+
+                WeekendEventEnabled = config.WeekendEventEnabled,
+
+                WeekendTamingMultiplier =
+                 config.WeekendTamingMultiplier,
+
+                WeekendWildDinoFoodDrainMultiplier =
+                 config.WeekendWildDinoFoodDrainMultiplier,
+
+                WeekendHarvestMultiplier =
+                 config.WeekendHarvestMultiplier,
+
+                WeekendBabyMatureMultiplier =
+                 config.WeekendBabyMatureMultiplier,
+
+                WeekendBabyCuddleIntervalMultiplier =
+                 config.WeekendBabyCuddleIntervalMultiplier,
+
+                WeekendXpMultiplier =
+                 config.WeekendXpMultiplier,
+
                 AutoConnect = config.AutoConnect,
-                RefreshInterval = config.RefreshInterval
+                RefreshInterval = config.RefreshInterval,
+
+                WeekendTamingEnabled =
+                    config.WeekendTamingEnabled,
+
+                WeekendHarvestEnabled =
+                    config.WeekendHarvestEnabled,
+
+                WeekendBabyMatureEnabled =
+                    config.WeekendBabyMatureEnabled,
+
+                WeekendXpEnabled =
+                    config.WeekendXpEnabled,
+
+                WeekendWildDinoFoodDrainEnabled =
+                    config.WeekendWildDinoFoodDrainEnabled,
+
+                WeekendBabyCuddleIntervalEnabled =
+                    config.WeekendBabyCuddleIntervalEnabled,
+
+                WeekendStartDay =
+                    config.WeekendStartDay,
+
+                WeekendStartHour =
+                    config.WeekendStartHour,
+
+                WeekendStartMinute =
+                    config.WeekendStartMinute,
+
+                WeekendEndDay =
+                    config.WeekendEndDay,
+
+                WeekendEndHour =
+                    config.WeekendEndHour,
+
+                WeekendEndMinute =
+                    config.WeekendEndMinute,
             };
 
             string json = JsonSerializer.Serialize(
