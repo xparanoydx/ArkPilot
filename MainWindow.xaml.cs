@@ -24,10 +24,12 @@ namespace ArkPilot
         public ServerMonitor? Monitor => monitor;
 
         private readonly ArkService ark;
+
         private readonly BackupService backupService;
 
         public BackupService BackupService =>
             backupService;
+
 
         private NavigationService navigation;
 
@@ -50,6 +52,9 @@ namespace ArkPilot
             rcon = new RconEngine(rawRcon);
 
             ark = new ArkService(rcon);
+
+            backupService =
+                new BackupService(ark);
 
             _automation = new AutomationService(
                 rcon,
@@ -214,25 +219,32 @@ namespace ArkPilot
 
         private void Monitor_Updated()
         {
+            ServerMonitor? currentMonitor =
+                monitor;
+
+
+            if (currentMonitor == null)
+                return;
+
+
             Dispatcher.Invoke(() =>
             {
                 StatusPlayers.Text =
-                    $"👥 {monitor.PlayerCount} joueur(s)";
+                    $"👥 {currentMonitor.PlayerCount} joueur(s)";
 
 
                 PingText.Text =
-                    monitor.Ping >= 0
-                    ? $"Ping : {monitor.Ping} ms"
+                    currentMonitor.Ping >= 0
+                    ? $"Ping : {currentMonitor.Ping} ms"
                     : "Ping : --";
 
 
                 StatusRcon.Text =
-                    monitor.Online
+                    currentMonitor.Online
                     ? "🟢 Serveur connecté"
                     : "🔴 Serveur hors ligne";
             });
         }
-
 
 
 
@@ -333,7 +345,9 @@ namespace ArkPilot
             if (!ready)
             {
                 navigation.Navigate(
-                    new SettingsPage(rcon));
+                    new SettingsPage(
+                        rcon,
+                        _automation));
 
                 return;
             }
@@ -342,15 +356,13 @@ namespace ArkPilot
                 new DashboardPage(rcon));
         }
 
-
         private void Players_Click(
-            object sender,
-            RoutedEventArgs e)
+    object sender,
+    RoutedEventArgs e)
         {
             navigation.Navigate(
                 new PlayersPage(rcon));
         }
-
 
 
         private void Settings_Click(
@@ -365,14 +377,28 @@ namespace ArkPilot
 
 
 
-        private void Server_Click(
-    object sender,
-    RoutedEventArgs e)
+        private async void Server_Click(
+            object sender,
+            RoutedEventArgs e)
         {
+            bool ready =
+                await EnsureMonitorAsync();
+
+
+            if (!ready)
+            {
+                navigation.Navigate(
+                    new SettingsPage(
+                        rcon,
+                        _automation));
+
+                return;
+            }
+
+
             navigation.Navigate(
                 new ServerPage(rcon));
         }
-
 
         private void Backups_Click(
     object sender,

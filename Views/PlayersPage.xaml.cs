@@ -9,7 +9,7 @@ namespace ArkPilot.Views
 {
     public partial class PlayersPage : Page
     {
-        private readonly ServerMonitor monitor;
+        private readonly ServerMonitor? monitor;
         private readonly RconEngine rcon;
 
         public ObservableCollection<PlayerInfo> Players { get; } = new();
@@ -29,8 +29,11 @@ namespace ArkPilot.Views
             PlayersGrid.ItemsSource = Players;
 
 
-            monitor.Updated += Monitor_Updated;
-
+            if (monitor != null)
+            {
+                monitor.Updated +=
+                    Monitor_Updated;
+            }
 
             Loaded += (_, __) =>
             {
@@ -40,7 +43,11 @@ namespace ArkPilot.Views
 
             Unloaded += (_, __) =>
             {
-                monitor.Updated -= Monitor_Updated;
+                if (monitor != null)
+                {
+                    monitor.Updated -=
+                        Monitor_Updated;
+                }
             };
         }
 
@@ -63,6 +70,22 @@ namespace ArkPilot.Views
         private void UpdatePlayers()
         {
             Players.Clear();
+
+            if (monitor == null)
+            {
+                Players.Clear();
+
+                PlayerCountText.Text =
+                    "👥 Joueurs connectés : 0";
+
+                ServerStatus.Text =
+                    "🔴 Serveur non initialisé";
+
+                LastUpdate.Text =
+                    "Dernière mise à jour : --";
+
+                return;
+            }
 
 
             foreach (var player in monitor.Players)

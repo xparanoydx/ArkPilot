@@ -4,6 +4,7 @@ using ArkPilot.Managers;
 using ArkPilot.Services;
 using System.Windows;
 using System.Windows.Controls;
+using System;
 
 namespace ArkPilot.Views
 {
@@ -25,7 +26,9 @@ namespace ArkPilot.Views
 
             monitor =
                 ((MainWindow)Application.Current.MainWindow)
-                .Monitor;
+                .Monitor
+                ?? throw new InvalidOperationException(
+                    "ServerMonitor non initialisé.");
 
             var mainWindow =
                 (MainWindow)Application.Current.MainWindow;

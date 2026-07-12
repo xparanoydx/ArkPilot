@@ -110,8 +110,15 @@ namespace ArkPilot.Views
                 HeaderStatusText.Text =
                     "● EN LIGNE";
 
-                HeaderStatusBorder.Background =
+                HeaderStatusText.Foreground =
+                    Brushes.White;
+
+                HeaderStatusBadge.Background =
+                    Brushes.Transparent;
+
+                HeaderStatusBadge.BorderBrush =
                     (Brush)FindResource("BrushSuccess");
+
 
                 ServerCard.Icon = "🟢";
                 ServerCard.Value = "EN LIGNE";
@@ -124,8 +131,15 @@ namespace ArkPilot.Views
                 HeaderStatusText.Text =
                     "● HORS LIGNE";
 
-                HeaderStatusBorder.Background =
+                HeaderStatusText.Foreground =
+                    Brushes.White;
+
+                HeaderStatusBadge.Background =
+                    Brushes.Transparent;
+
+                HeaderStatusBadge.BorderBrush =
                     (Brush)FindResource("BrushError");
+
 
                 ServerCard.Icon = "🔴";
                 ServerCard.Value = "HORS LIGNE";

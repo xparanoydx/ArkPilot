@@ -81,7 +81,10 @@ namespace ArkPilot.Config
                         CryptoService.Encrypt(
                             config.NitradoApiKey),
 
-                AutoSaveEnabled = config.AutoSaveEnabled,
+                    NitradoServiceId =
+                        config.NitradoServiceId,
+
+                    AutoSaveEnabled = config.AutoSaveEnabled,
                 AutoSaveIntervalMinutes = config.AutoSaveIntervalMinutes,
 
                 AutoRestartEnabled = config.AutoRestartEnabled,
@@ -146,35 +149,28 @@ namespace ArkPilot.Config
 
                 WeekendEndMinute =
                     config.WeekendEndMinute,
-            };
 
-                    FtpHost =
-                        config.FtpHost,
+                FtpHost =
+                    config.FtpHost,
 
-                    FtpPort =
-                        config.FtpPort,
+                FtpPort =
+                    config.FtpPort,
 
-                    FtpUser =
-                        config.FtpUser,
+                FtpUser =
+                    config.FtpUser,
 
-                    FtpPassword =
-                        CryptoService.Encrypt(
-                            config.FtpPassword),
-
-                    AutoConnect =
-                        config.AutoConnect,
-
-                    RefreshInterval =
-                        config.RefreshInterval
+                FtpPassword =
+                    CryptoService.Encrypt(
+                        config.FtpPassword)
                 };
 
-            string json =
-                JsonSerializer.Serialize(
-                    protectedConfig,
-                    new JsonSerializerOptions
+                string json =
+                    JsonSerializer.Serialize(
+                        protectedConfig,
+                        new JsonSerializerOptions
                     {
                         WriteIndented = true
-                    });
+        });
 
             File.WriteAllText(
                 ConfigFile,
