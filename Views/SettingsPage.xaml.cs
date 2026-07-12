@@ -95,7 +95,9 @@ namespace ArkPilot.Views
                     IpBox.Text.Trim();
 
                 config.RconPassword =
-                    PasswordBox.Password;
+                    passwordVisible
+                        ? PasswordTextBox.Text
+                        : PasswordBox.Password;
 
                 config.NitradoApiKey =
                     ApiKeyBox.Text.Trim();
@@ -103,24 +105,21 @@ namespace ArkPilot.Views
                 config.NitradoServiceId =
                     ServiceIdBox.Text.Trim();
 
-
                 if (!int.TryParse(
-                    PortBox.Text,
-                    out int port))
+                        PortBox.Text,
+                        out int port))
                 {
                     StatusError("Port RCON invalide");
                     return;
                 }
 
-
                 if (!int.TryParse(
-                    RefreshBox.Text,
-                    out int refresh))
+                        RefreshBox.Text,
+                        out int refresh))
                 {
                     StatusError("Refresh invalide");
                     return;
                 }
-
 
                 config.RconPort = port;
                 config.RefreshInterval = refresh;
@@ -211,7 +210,15 @@ namespace ArkPilot.Views
                 config.FtpUser = FtpUserBox.Text.Trim();
                 config.FtpPassword = FtpPasswordBox.Password;
 
-                if (!int.TryParse(FtpPortBox.Text, out int ftpPort))
+                config.FtpUser =
+                    FtpUserBox.Text.Trim();
+
+                config.FtpPassword =
+                    FtpPasswordBox.Password;
+
+                if (!int.TryParse(
+                        FtpPortBox.Text,
+                        out int ftpPort))
                 {
                     StatusError("Port FTP invalide");
                     return;
@@ -250,10 +257,10 @@ namespace ArkPilot.Views
             }
             catch (Exception ex)
             {
-                StatusError(ex.Message);
+                StatusError(
+                    "Erreur sauvegarde : " + ex.Message);
             }
         }
-
 
 
         // =========================

@@ -12,13 +12,13 @@ namespace ArkPilot.Managers
 {
     public class BackupManager
     {
-        private const string WorldFolderRemotePath =
-            "/arksa/ShooterGame/Saved/SavedArks/Ragnarok_WP/";
 
         private readonly BackupService backupService;
         private readonly TaskQueueService taskQueue;
         private readonly TransferManager transferManager;
         private readonly ZipService zipService;
+        private readonly FtpService ftpService;
+        private readonly NitradoService nitradoService;
 
         public DateTime LastBackupTime =>
             backupService.LastBackupTime;
@@ -27,12 +27,16 @@ namespace ArkPilot.Managers
             BackupService backupService,
             TaskQueueService taskQueue,
             TransferManager transferManager,
-            ZipService zipService)
+            ZipService zipService,
+            FtpService ftpService,
+            NitradoService nitradoService)
         {
             this.backupService = backupService;
             this.taskQueue = taskQueue;
             this.transferManager = transferManager;
             this.zipService = zipService;
+            this.ftpService = ftpService;
+            this.nitradoService = nitradoService;
         }
 
         // =========================
@@ -68,6 +72,55 @@ namespace ArkPilot.Managers
                     return Task.CompletedTask;
                 });
         }
+
+        private async Task<string?> FindWorldFolderAsync()
+        {
+            const string savedArksPath =
+                "/arksa/ShooterGame/Saved/SavedArks/";
+
+            var serverInfo =
+                await nitradoService.GetServerInfoAsync();
+
+            if (string.IsNullOrWhiteSpace(serverInfo.Map) ||
+                serverInfo.Map == "--")
+            {
+                LogService.Error(
+                    "Impossible de déterminer la map active.");
+
+                return null;
+            }
+
+            string activeMap =
+                serverInfo.Map.Trim();
+
+            LogService.Info(
+                $"Map active détectée : {activeMap}");
+
+            var items =
+                await ftpService.GetDirectoryListingAsync(
+                    savedArksPath);
+
+            var worldFolder =
+                items.FirstOrDefault(item =>
+                    item.IsDirectory &&
+                    item.Name.Equals(
+                        activeMap,
+                        StringComparison.OrdinalIgnoreCase));
+
+            if (worldFolder == null)
+            {
+                LogService.Error(
+                    $"Dossier FTP de la map introuvable : {activeMap}");
+
+                return null;
+            }
+
+            LogService.Success(
+                $"Dossier monde sélectionné : {worldFolder.Name}");
+
+            return worldFolder.FullPath + "/";
+        }
+
 
         // =========================
         // SAUVEGARDE COMPLÈTE
@@ -112,9 +165,18 @@ namespace ArkPilot.Managers
 
                     Directory.CreateDirectory(worldFolder);
 
+                    string? worldFolderRemotePath =
+    await FindWorldFolderAsync();
+
+                    if (worldFolderRemotePath == null)
+                    {
+                        success = false;
+                        return;
+                    }
+
                     bool downloadSuccess =
                         await transferManager.DownloadFolderAsync(
-                            WorldFolderRemotePath,
+                            worldFolderRemotePath,
                             worldFolder);
 
                     if (!downloadSuccess)

@@ -136,56 +136,39 @@ namespace ArkPilot.Services
         // QUERY WITH RESPONSE
         // =========================
 
+        // =========================
+        // SILENT INTERNAL QUERY
+        // =========================
+
         public async Task<string> Query(
             string command)
         {
-            var tcs =
-                new TaskCompletionSource<string>();
-
-
-            void Handler(
-                string cmd,
-                string result)
+            if (!IsConnected)
             {
-                if (cmd != command)
-                    return;
-
-
-                tcs.TrySetResult(result);
-
-                OnResponse -= Handler;
+                return "RCON_OFFLINE";
             }
 
+            await _commandLock.WaitAsync();
 
-            OnResponse += Handler;
-
-
-            Send(command);
-
-
-
-            var timeout =
-                Task.Delay(5000);
-
-
-            var completed =
-                await Task.WhenAny(
-                    tcs.Task,
-                    timeout);
-
-
-
-            if (completed == timeout)
+            try
             {
-                OnResponse -= Handler;
+                string result =
+                    await _client.Send(command);
 
-                return "TIMEOUT";
+                return result;
             }
+            catch (Exception ex)
+            {
+                LogService.Error(
+                    $"RCON query erreur : {ex.Message}");
 
-
-            return await tcs.Task;
+                return "RCON_ERROR";
+            }
+            finally
+            {
+                _commandLock.Release();
+            }
         }
-
 
 
         // =========================
@@ -225,11 +208,9 @@ namespace ArkPilot.Services
                     // Ne pas afficher les commandes automatiques
                     // du ServerMonitor
 
-                    if (command != "ListPlayers")
-                    {
-                        LogService.Info($"RCON -> {command}");
-                        OnLog?.Invoke($"RCON -> {command}");
-                    }
+                    LogService.Info(
+                        $"RCON -> {command}");
+
                 }
                 catch (Exception ex)
                 {

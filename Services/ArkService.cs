@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ArkPilot.Services
 {
@@ -33,9 +34,14 @@ namespace ArkPilot.Services
             _rcon.Send($"BanPlayer {playerId}");
         }
 
-        public void Broadcast(string message)
+        public async Task<string> BroadcastAsync(
+            string message)
         {
-            _rcon.Send($"Broadcast {message}");
+            if (string.IsNullOrWhiteSpace(message))
+                return "EMPTY_MESSAGE";
+
+            return await _rcon.SendDirect(
+                $"ServerChat ADMIN: {message.Trim()}");
         }
 
         public void SaveWorld()

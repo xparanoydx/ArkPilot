@@ -5,6 +5,15 @@
 </p>
 
 <p align="center">
+
+![Release](https://img.shields.io/github/v/release/xparanoydx/ArkPilot?style=for-the-badge)
+![Downloads](https://img.shields.io/github/downloads/xparanoydx/ArkPilot/total?style=for-the-badge)
+![License](https://img.shields.io/github/license/xparanoydx/ArkPilot?style=for-the-badge)
+![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-blue?style=for-the-badge)
+
+</p>
+
+<p align="center">
   <strong>Control your ARK server.</strong>
 </p>
 
@@ -16,16 +25,17 @@
 
 ## ✨ Features
 
-- 📊 Modern dashboard
-- 🎮 RCON management
-- 👥 Connected players display
-- 💾 Backup Manager
-- 📦 Complete world backups
-- 🗜 Automatic ZIP compression
-- 🌐 FTP Explorer
-- 🔗 Nitrado API integration
-- 📜 Live event log
-- ⚙️ Centralized settings
+| Feature | Status |
+|---------|:------:|
+| Dashboard | ✅ |
+| RCON | ✅ |
+| FTP Explorer | ✅ |
+| Backup Manager | ✅ |
+| ZIP Backups | ✅ |
+| Live Logs | ✅ |
+| Nitrado API | ✅ |
+| Players Management | ✅ |
+| Settings | ✅ |
 
 ---
 
@@ -33,25 +43,25 @@
 
 ### Dashboard
 
-Screenshot coming soon.
+Screenshots will be added in the next release.
 
 ### FTP Explorer
 
-Screenshot coming soon.
+Screenshots will be added in the next release.
 
 ### Backup Manager
 
-Screenshot coming soon.
+Screenshots will be added in the next release.
 
 ### RCON Console
 
-Screenshot coming soon.
+Screenshots will be added in the next release.
 
 ---
 
 ## 🚀 Installation
 
-1. Download the latest release from the **Releases** page.
+1. Download the latest release.
 2. Extract the ZIP archive.
 3. Copy:
 
@@ -65,7 +75,7 @@ to:
 appsettings.json
 ```
 
-4. Edit `appsettings.json` and enter your:
+4. Edit `appsettings.json` with your own:
 
 - Server IP
 - RCON password
@@ -81,3 +91,13 @@ ArkPilot.exe
 ArkPilot is distributed as a **self-contained Windows x64 application**.
 
 No .NET installation is required.
+
+---
+
+## ⭐ Support
+
+If you enjoy using ArkPilot, consider leaving a ⭐ on GitHub.
+
+It helps the project grow and motivates future development.
+
+Thank you for your support!

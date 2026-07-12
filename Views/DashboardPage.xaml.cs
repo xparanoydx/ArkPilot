@@ -1,5 +1,6 @@
 using ArkPilot.Config;
 using ArkPilot.Managers;
+using ArkPilot.Models;
 using ArkPilot.Services;
 using System;
 using System.Windows;
@@ -20,10 +21,14 @@ namespace ArkPilot.Views
             InitializeComponent();
 
             rcon = engine;
-            monitor = ((MainWindow)Application.Current.MainWindow).Monitor;
+            monitor =
+                ((MainWindow)Application.Current.MainWindow).Monitor
+                ?? throw new InvalidOperationException(
+                    "Le moniteur serveur n'est pas initialisé.");
 
-            var ark = new ArkService(rcon);
-            backupService = new BackupService(ark);
+            backupService =
+                ((MainWindow)Application.Current.MainWindow)
+                .BackupService;
 
             var config = ConfigManager.Load();
             var nitradoService = new NitradoService(config);
@@ -57,89 +62,121 @@ namespace ArkPilot.Views
 
         private async System.Threading.Tasks.Task UpdateDashboardAsync()
         {
-            var info =
-                await dashboardManager.GetDashboardInfoAsync();
-
-            Dispatcher.Invoke(() =>
+            try
             {
-                if (info.Online)
+                var info =
+                    await dashboardManager.GetDashboardInfoAsync();
+
+                if (!Dispatcher.CheckAccess())
                 {
-                    HeaderStatusText.Text =
-                        "● EN LIGNE";
+                    await Dispatcher.InvokeAsync(
+                        () => ApplyDashboardInfo(info));
 
-                    HeaderStatusText.Foreground =
-                        Brushes.White;
-
-                    HeaderStatusBadge.BorderBrush =
-                        (Brush)FindResource("BrushSuccess");
-
-
-                    ServerCard.Icon = "🟢";
-                    ServerCard.Value = "EN LIGNE";
-
-                    ServerCard.AccentBrush =
-                        (Brush)FindResource("BrushSuccess");
-                }
-                else
-                {
-                    HeaderStatusText.Text =
-                        "● HORS LIGNE";
-
-                    HeaderStatusText.Foreground =
-                        Brushes.White;
-
-                    HeaderStatusBadge.BorderBrush =
-                        (Brush)FindResource("BrushError");
-
-
-                    ServerCard.Icon = "🔴";
-                    ServerCard.Value = "HORS LIGNE";
-
-                    ServerCard.AccentBrush =
-                        (Brush)FindResource("BrushError");
+                    return;
                 }
 
-                ServerCard.Footer =
-                    monitor.LastUpdate == DateTime.MinValue
-                        ? "Dernière MAJ : --"
-                        : $"Dernière MAJ : {monitor.LastUpdate:HH:mm:ss}";
+                ApplyDashboardInfo(info);
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(
+                    $"Dashboard update impossible : {ex.Message}");
 
-                PingCard.Value =
-                    info.Ping >= 0
-                        ? $"{info.Ping} ms"
-                        : "--";
+                if (!Dispatcher.HasShutdownStarted)
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        HeaderStatusText.Text =
+                            "● ERREUR";
 
-                PlayersCard.Value =
-                    info.Players.ToString();
+                        ApiCard.Value =
+                            "Erreur";
 
-                UptimeCard.Value =
-                    info.Uptime;
+                        ApiCard.Footer =
+                            ex.Message;
 
-                SaveCard.Value =
-                    info.LastBackup;
-
-                RconCard.Value =
-                    rcon.IsConnected
-                        ? "Connecté"
-                        : "Déconnecté";
-
-                RconCard.AccentBrush =
-                    rcon.IsConnected
-                        ? (Brush)FindResource("BrushSuccess")
-                        : (Brush)FindResource("BrushError");
-
-                ApiCard.Value =
-                    info.ApiStatus;
-
-                ApiCard.Footer =
-                    $"{info.Map} | {info.SlotsUsed}/{info.SlotsMax} | {info.Game}";
-
-                ApiCard.AccentBrush =
-                    info.ApiStatus == "Started"
-                        ? (Brush)FindResource("BrushSuccess")
-                        : (Brush)FindResource("BrushWarning");
-            });
+                        ApiCard.AccentBrush =
+                            (Brush)FindResource("BrushError");
+                    });
+                }
+            }
         }
+
+        private void ApplyDashboardInfo(
+    DashboardInfo info)
+        {
+            if (info.Online)
+            {
+                HeaderStatusText.Text =
+                    "● EN LIGNE";
+
+                HeaderStatusBorder.Background =
+                    (Brush)FindResource("BrushSuccess");
+
+                ServerCard.Icon = "🟢";
+                ServerCard.Value = "EN LIGNE";
+
+                ServerCard.AccentBrush =
+                    (Brush)FindResource("BrushSuccess");
+            }
+            else
+            {
+                HeaderStatusText.Text =
+                    "● HORS LIGNE";
+
+                HeaderStatusBorder.Background =
+                    (Brush)FindResource("BrushError");
+
+                ServerCard.Icon = "🔴";
+                ServerCard.Value = "HORS LIGNE";
+
+                ServerCard.AccentBrush =
+                    (Brush)FindResource("BrushError");
+            }
+
+            ServerCard.Footer =
+                monitor.LastUpdate == DateTime.MinValue
+                    ? "Dernière MAJ : --"
+                    : $"Dernière MAJ : {monitor.LastUpdate:HH:mm:ss}";
+
+            PingCard.Value =
+                info.Ping >= 0
+                    ? $"{info.Ping} ms"
+                    : "--";
+
+            PlayersCard.Value =
+                info.Players.ToString();
+
+            UptimeCard.Value =
+                info.Uptime;
+
+            SaveCard.Value =
+                info.LastBackup;
+
+            RconCard.Value =
+                rcon.IsConnected
+                    ? "Connecté"
+                    : "Déconnecté";
+
+            RconCard.AccentBrush =
+                rcon.IsConnected
+                    ? (Brush)FindResource("BrushSuccess")
+                    : (Brush)FindResource("BrushError");
+
+            ApiCard.Value =
+                info.ApiStatus;
+
+            ApiCard.Footer =
+                $"{info.Map} | " +
+                $"{info.SlotsUsed}/{info.SlotsMax} | " +
+                $"{info.Game}";
+
+            ApiCard.AccentBrush =
+                info.ApiStatus == "Started"
+                    ? (Brush)FindResource("BrushSuccess")
+                    : (Brush)FindResource("BrushWarning");
+        }
+
 
         private async void SaveWorld_Click(object sender, RoutedEventArgs e)
         {
