@@ -76,23 +76,43 @@ namespace ArkPilot.Services
             try
             {
                 var result =
-                    await _rcon.SendCommandAsync(command);
+                    await _rcon
+                        .SendCommandAsync(command)
+                        .WaitAsync(
+                            TimeSpan.FromSeconds(10));
 
 
                 return result ?? "";
+            }
+            catch (TimeoutException)
+            {
+                Disconnect();
+
+
+                LogService.Warning(
+                    $"Timeout RCON commande : {command}");
+
+                OnLog?.Invoke(
+                    $"⚠ Timeout RCON commande : {command}");
+
+
+                return "TIMEOUT";
             }
             catch (Exception ex)
             {
                 Disconnect();
 
 
-                LogService.Warning($"RCON perdu : {ex.Message}");
-                OnLog?.Invoke($"⚠ RCON perdu : {ex.Message}");
+                LogService.Warning(
+                    $"RCON perdu : {ex.Message}");
+
+                OnLog?.Invoke(
+                    $"⚠ RCON perdu : {ex.Message}");
+
 
                 return "RCON_OFFLINE";
             }
         }
-
 
 
         // =========================

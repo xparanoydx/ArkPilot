@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using ArkPilot.Models;
+using System.Globalization;
 
 namespace ArkPilot.Services
 {
@@ -38,6 +40,25 @@ namespace ArkPilot.Services
         private static readonly string GameUserSettingsBackupPath =
             Path.Combine(
                 EventBackupPath,
+                "GameUserSettings.ini");
+
+        private static readonly string UploadRollbackPath =
+    Path.Combine(
+        Path.GetTempPath(),
+        "ArkPilot",
+        "Events",
+        "UploadRollback");
+
+
+        private static readonly string RollbackGameIniPath =
+            Path.Combine(
+                UploadRollbackPath,
+                "Game.ini");
+
+
+        private static readonly string RollbackGameUserSettingsPath =
+            Path.Combine(
+                UploadRollbackPath,
                 "GameUserSettings.ini");
 
 
@@ -93,25 +114,48 @@ namespace ArkPilot.Services
                 return false;
             }
 
-            BackupOriginalConfig(
-                gameIni,
-                gameUserSettings);
+            if (!HasOriginalConfigBackup)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : aucune configuration d'origine définie");
+
+                return false;
+            }
 
 
-            LoadOriginalConfigBase(
-                gameIni,
-                gameUserSettings);
+            bool originalValuesRestored =
+                RestoreEventValuesFromOriginal(
+                    gameIni,
+                    gameUserSettings);
 
 
-            ApplyWeekendValues(
-                gameIni,
-                gameUserSettings);
+            if (!originalValuesRestored)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : restauration des valeurs événement impossible");
+
+                return false;
+            }
+
+
+            bool valuesApplied =
+                ApplyWeekendValues(
+                    gameIni,
+                    gameUserSettings);
+
+            if (!valuesApplied)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : application de l'événement annulée");
+
+                return false;
+            }
+
 
             bool uploaded =
                 await UploadConfigFilesAsync(
                     gameIni,
                     gameUserSettings);
-
 
             if (!uploaded)
             {
@@ -181,37 +225,6 @@ namespace ArkPilot.Services
         }
 
 
-        // =========================
-        // BACKUP ORIGINAL CONFIG
-        // =========================
-
-        private void BackupOriginalConfig(
-            string gameIni,
-            string gameUserSettings)
-        {
-            Directory.CreateDirectory(
-                EventBackupPath);
-
-
-            if (!File.Exists(GameIniBackupPath))
-            {
-                File.Copy(
-                    gameIni,
-                    GameIniBackupPath);
-            }
-
-
-            if (!File.Exists(GameUserSettingsBackupPath))
-            {
-                File.Copy(
-                    gameUserSettings,
-                    GameUserSettingsBackupPath);
-            }
-
-
-            OnLog?.Invoke(
-                "💾 Event : configuration originale sauvegardée");
-        }
 
 
         // =========================
@@ -220,8 +233,7 @@ namespace ArkPilot.Services
 
         public async Task<bool> RestoreOriginalConfigAsync()
         {
-            if (!File.Exists(GameIniBackupPath) ||
-                !File.Exists(GameUserSettingsBackupPath))
+            if (!HasOriginalConfigBackup)
             {
                 OnLog?.Invoke(
                     "⚠ Event : aucune configuration originale à restaurer");
@@ -234,10 +246,47 @@ namespace ArkPilot.Services
                 "🏁 Event : restauration de la configuration normale");
 
 
+            string? gameIni =
+                await DownloadConfigFileAsync(
+                    GameIniPath,
+                    "Game.ini");
+
+
+            string? gameUserSettings =
+                await DownloadConfigFileAsync(
+                    GameUserSettingsPath,
+                    "GameUserSettings.ini");
+
+
+            if (gameIni == null ||
+                gameUserSettings == null)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : fichiers de configuration indisponibles");
+
+                return false;
+            }
+
+
+            bool originalValuesRestored =
+                RestoreEventValuesFromOriginal(
+                    gameIni,
+                    gameUserSettings);
+
+
+            if (!originalValuesRestored)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : restauration des valeurs d'origine impossible");
+
+                return false;
+            }
+
+
             bool uploaded =
                 await UploadConfigFilesAsync(
-                    GameIniBackupPath,
-                    GameUserSettingsBackupPath);
+                    gameIni,
+                    gameUserSettings);
 
 
             if (!uploaded)
@@ -252,46 +301,192 @@ namespace ArkPilot.Services
             OnLog?.Invoke(
                 "✅ Event : configuration normale restaurée");
 
-            File.Delete(
-    GameIniBackupPath);
-
-            File.Delete(
-                GameUserSettingsBackupPath);
-
-
-            OnLog?.Invoke(
-                "🧹 Event : sauvegarde temporaire supprimée");
 
             return true;
         }
 
 
+
         // =========================
-        // LOAD ORIGINAL CONFIG BASE
+        // GET ORIGINAL CONFIG
         // =========================
 
-        private void LoadOriginalConfigBase(
+        public OriginalEventConfig? GetOriginalEventConfig()
+        {
+            if (!HasOriginalConfigBackup)
+            {
+                return null;
+            }
+
+
+            return new OriginalEventConfig
+            {
+                TamingMultiplier =
+                    GetIniDoubleValue(
+                        GameUserSettingsBackupPath,
+                        "TamingSpeedMultiplier"),
+
+                WildDinoFoodDrainMultiplier =
+                    GetIniDoubleValue(
+                        GameUserSettingsBackupPath,
+                        "WildDinoCharacterFoodDrainMultiplier"),
+
+                HarvestMultiplier =
+                    GetIniDoubleValue(
+                        GameUserSettingsBackupPath,
+                        "HarvestAmountMultiplier"),
+
+                BabyMatureMultiplier =
+                    GetIniDoubleValue(
+                        GameIniBackupPath,
+                        "BabyMatureSpeedMultiplier"),
+
+                BabyCuddleIntervalMultiplier =
+                    GetIniDoubleValue(
+                        GameIniBackupPath,
+                        "BabyCuddleIntervalMultiplier"),
+
+                XpMultiplier =
+                    GetIniDoubleValue(
+                        GameIniBackupPath,
+                        "XPMultiplier")
+            };
+        }
+
+
+        // =========================
+        // GET INI DOUBLE VALUE
+        // =========================
+
+        private double GetIniDoubleValue(
+            string filePath,
+            string key)
+        {
+            string[] lines =
+                File.ReadAllLines(filePath);
+
+
+            foreach (string line in lines)
+            {
+                string value =
+                    line.Trim();
+
+
+                if (!value.StartsWith(
+                    key + "=",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+
+                string rawValue =
+                    value.Substring(
+                        key.Length + 1);
+
+
+                if (double.TryParse(
+                    rawValue,
+                    NumberStyles.Float,
+                    CultureInfo.InvariantCulture,
+                    out double result))
+                {
+                    return result;
+                }
+            }
+
+
+            return 0;
+        }
+
+
+        // =========================
+        // RESTORE EVENT VALUES FROM ORIGINAL
+        // =========================
+
+        private bool RestoreEventValuesFromOriginal(
             string gameIni,
             string gameUserSettings)
         {
-            if (!HasOriginalConfigBackup)
-                return;
+            OriginalEventConfig? original =
+                GetOriginalEventConfig();
 
 
-            File.Copy(
-                GameIniBackupPath,
-                gameIni,
-                true);
+            if (original == null)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : configuration d'origine indisponible");
+
+                return false;
+            }
 
 
-            File.Copy(
-                GameUserSettingsBackupPath,
-                gameUserSettings,
-                true);
+            bool success =
+                true;
+
+
+            success &=
+                SetIniValue(
+                    gameUserSettings,
+                    "TamingSpeedMultiplier",
+                    original.TamingMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            success &=
+                SetIniValue(
+                    gameUserSettings,
+                    "HarvestAmountMultiplier",
+                    original.HarvestMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            success &=
+                SetIniValue(
+                    gameIni,
+                    "XPMultiplier",
+                    original.XpMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            success &=
+                SetIniValue(
+                    gameUserSettings,
+                    "WildDinoCharacterFoodDrainMultiplier",
+                    original.WildDinoFoodDrainMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            success &=
+                SetIniValue(
+                    gameIni,
+                    "BabyMatureSpeedMultiplier",
+                    original.BabyMatureMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            success &=
+                SetIniValue(
+                    gameIni,
+                    "BabyCuddleIntervalMultiplier",
+                    original.BabyCuddleIntervalMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
+
+
+            if (!success)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : restauration des valeurs d'origine incomplète");
+
+                return false;
+            }
 
 
             OnLog?.Invoke(
-                "📄 Event : configuration originale chargée comme base");
+                "📄 Event : valeurs événement restaurées depuis l'origine");
+
+
+            return true;
         }
 
 
@@ -299,81 +494,102 @@ namespace ArkPilot.Services
         // APPLY WEEKEND VALUES
         // =========================
 
-        private void ApplyWeekendValues(
+        private bool ApplyWeekendValues(
             string gameIni,
             string gameUserSettings)
         {
+            bool success =
+                true;
+
+
             if (_config.WeekendTamingEnabled)
             {
-                SetIniValue(
-                    gameUserSettings,
-                    "TamingSpeedMultiplier",
-                    _config.WeekendTamingMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameUserSettings,
+                        "TamingSpeedMultiplier",
+                        _config.WeekendTamingMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
             }
 
 
             if (_config.WeekendHarvestEnabled)
             {
-                SetIniValue(
-                    gameUserSettings,
-                    "HarvestAmountMultiplier",
-                    _config.WeekendHarvestMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameUserSettings,
+                        "HarvestAmountMultiplier",
+                        _config.WeekendHarvestMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
             }
 
 
             if (_config.WeekendXpEnabled)
             {
-                SetIniValue(
-                    gameIni,
-                    "XPMultiplier",
-                    _config.WeekendXpMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameIni,
+                        "XPMultiplier",
+                        _config.WeekendXpMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
             }
 
 
             if (_config.WeekendWildDinoFoodDrainEnabled)
             {
-                SetIniValue(
-                    gameUserSettings,
-                    "WildDinoCharacterFoodDrainMultiplier",
-                    _config.WeekendWildDinoFoodDrainMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameUserSettings,
+                        "WildDinoCharacterFoodDrainMultiplier",
+                        _config.WeekendWildDinoFoodDrainMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
             }
 
 
             if (_config.WeekendBabyMatureEnabled)
             {
-                SetIniValue(
-                    gameIni,
-                    "BabyMatureSpeedMultiplier",
-                    _config.WeekendBabyMatureMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameIni,
+                        "BabyMatureSpeedMultiplier",
+                        _config.WeekendBabyMatureMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
             }
 
 
             if (_config.WeekendBabyCuddleIntervalEnabled)
             {
-                SetIniValue(
-                    gameIni,
-                    "BabyCuddleIntervalMultiplier",
-                    _config.WeekendBabyCuddleIntervalMultiplier.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
+                success &=
+                    SetIniValue(
+                        gameIni,
+                        "BabyCuddleIntervalMultiplier",
+                        _config.WeekendBabyCuddleIntervalMultiplier.ToString(
+                            CultureInfo.InvariantCulture));
+            }
+
+
+            if (!success)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : un ou plusieurs paramètres sont introuvables");
+
+                return false;
             }
 
 
             OnLog?.Invoke(
                 "🎉 Event : multiplicateurs week-end préparés");
-        }
 
+
+            return true;
+        }
 
 
         // =========================
         // SET INI VALUE
         // =========================
 
-        private void SetIniValue(
+        private bool SetIniValue(
             string filePath,
             string key,
             string value)
@@ -410,15 +626,113 @@ namespace ArkPilot.Services
                 OnLog?.Invoke(
                     $"⚠ Event : paramètre introuvable - {key}");
 
-                return;
+                return false;
             }
 
 
             File.WriteAllLines(
                 filePath,
                 lines);
+
+
+            return true;
         }
 
+
+        // =========================
+        // UPLOAD FILE WITH RETRY
+        // =========================
+
+        private async Task<bool> UploadFileWithRetryAsync(
+            string localPath,
+            string remotePath)
+        {
+            bool success =
+                await _ftp.UploadFileAsync(
+                    localPath,
+                    remotePath);
+
+
+            if (success)
+                return true;
+
+
+            OnLog?.Invoke(
+                $"⚠ Event : nouvelle tentative d'upload - {Path.GetFileName(localPath)}");
+
+
+            await Task.Delay(
+                TimeSpan.FromSeconds(2));
+
+
+            return await _ftp.UploadFileAsync(
+                localPath,
+                remotePath);
+        }
+
+
+        // =========================
+        // CLEAN UPLOAD ROLLBACK
+        // =========================
+
+        private void CleanUploadRollback()
+        {
+            try
+            {
+                if (Directory.Exists(
+                    UploadRollbackPath))
+                {
+                    Directory.Delete(
+                        UploadRollbackPath,
+                        true);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnLog?.Invoke(
+                    $"⚠ Event : nettoyage rollback impossible - {ex.Message}");
+            }
+        }
+
+
+        // =========================
+        // BACKUP CURRENT SERVER CONFIG
+        // =========================
+
+        private async Task<bool> BackupCurrentServerConfigAsync()
+        {
+            Directory.CreateDirectory(
+                UploadRollbackPath);
+
+
+            bool gameIniDownloaded =
+                await _ftp.DownloadFileAsync(
+                    GameIniPath,
+                    RollbackGameIniPath);
+
+
+            bool gameUserSettingsDownloaded =
+                await _ftp.DownloadFileAsync(
+                    GameUserSettingsPath,
+                    RollbackGameUserSettingsPath);
+
+
+            if (!gameIniDownloaded ||
+                !gameUserSettingsDownloaded)
+            {
+                OnLog?.Invoke(
+                    "❌ Event : sauvegarde de secours avant upload impossible");
+
+                return false;
+            }
+
+
+            OnLog?.Invoke(
+                "💾 Event : sauvegarde de secours avant upload créée");
+
+
+            return true;
+        }
 
         // =========================
         // UPLOAD CONFIG FILES
@@ -428,14 +742,24 @@ namespace ArkPilot.Services
             string gameIni,
             string gameUserSettings)
         {
+            bool backupCreated =
+                await BackupCurrentServerConfigAsync();
+
+
+            if (!backupCreated)
+            {
+                return false;
+            }
+
+
             bool gameIniUploaded =
-                await _ftp.UploadFileAsync(
+                await UploadFileWithRetryAsync(
                     gameIni,
                     GameIniPath);
 
 
             bool gameUserSettingsUploaded =
-                await _ftp.UploadFileAsync(
+                await UploadFileWithRetryAsync(
                     gameUserSettings,
                     GameUserSettingsPath);
 
@@ -444,7 +768,35 @@ namespace ArkPilot.Services
                 !gameUserSettingsUploaded)
             {
                 OnLog?.Invoke(
-                    "❌ Event : upload des fichiers de configuration impossible");
+                    "❌ Event : upload incomplet, restauration de secours");
+
+
+                bool gameIniRestored =
+                    await UploadFileWithRetryAsync(
+                        RollbackGameIniPath,
+                        GameIniPath);
+
+
+                bool gameUserSettingsRestored =
+                    await UploadFileWithRetryAsync(
+                        RollbackGameUserSettingsPath,
+                        GameUserSettingsPath);
+
+
+                if (!gameIniRestored ||
+                    !gameUserSettingsRestored)
+                {
+                    OnLog?.Invoke(
+                        "❌ Event : restauration de secours incomplète");
+                }
+                else
+                {
+                    OnLog?.Invoke(
+                        "✅ Event : configuration serveur restaurée après échec");
+                }
+
+                CleanUploadRollback();
+
 
                 return false;
             }
@@ -453,8 +805,13 @@ namespace ArkPilot.Services
             OnLog?.Invoke(
                 "✅ Event : fichiers de configuration envoyés");
 
+            CleanUploadRollback();
+
+
             return true;
         }
+
+
 
         // =========================
         // DOWNLOAD CONFIG FILE

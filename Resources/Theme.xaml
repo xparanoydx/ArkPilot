@@ -17,4 +17,92 @@
     <SolidColorBrush x:Key="BrushError" Color="#F44336"/>
     <SolidColorBrush x:Key="BrushInfo" Color="#42A5F5"/>
 
+    <!-- ========================= -->
+    <!-- GLOBAL BUTTON STYLE -->
+    <!-- ========================= -->
+
+    <Style TargetType="Button">
+
+        <Setter Property="Foreground"
+            Value="{StaticResource BrushTextPrimary}"/>
+
+        <Setter Property="Background"
+            Value="{StaticResource BrushCard}"/>
+
+        <Setter Property="BorderBrush"
+            Value="{StaticResource BrushBorder}"/>
+
+        <Setter Property="BorderThickness"
+            Value="1"/>
+
+        <Setter Property="Padding"
+            Value="14,8"/>
+
+        <Setter Property="FontWeight"
+            Value="SemiBold"/>
+
+        <Setter Property="Cursor"
+            Value="Hand"/>
+
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+
+                <ControlTemplate TargetType="Button">
+
+                    <Border x:Name="ButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="7"
+                        Padding="{TemplateBinding Padding}">
+
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+
+                    </Border>
+
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver"
+                             Value="True">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Background"
+                                Value="{StaticResource BrushCardHover}"/>
+
+                        </Trigger>
+
+
+                        <Trigger Property="IsPressed"
+                             Value="True">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Opacity"
+                                Value="0.75"/>
+
+                        </Trigger>
+
+
+                        <Trigger Property="IsEnabled"
+                             Value="False">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Opacity"
+                                Value="0.65"/>
+
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+
+        </Setter>
+
+    </Style>
+
 </ResourceDictionary>

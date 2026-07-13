@@ -5,6 +5,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using System.Globalization;
+using ArkPilot.Models;
 
 namespace ArkPilot.Views
 {
@@ -22,9 +23,35 @@ namespace ArkPilot.Views
 
             automation = automationService;
 
+            automation.WeekendEventStateChanged +=
+                Automation_WeekendEventStateChanged;
+
+            automation.WeekendEventConfigApplied +=
+                Automation_WeekendEventConfigApplied;
+
+
             config = ConfigManager.Load();
 
             LoadConfig();
+
+            Unloaded +=
+                EventsPage_Unloaded;
+        }
+
+
+        // =========================
+        // PAGE UNLOADED
+        // =========================
+
+        private void EventsPage_Unloaded(
+            object sender,
+            RoutedEventArgs e)
+        {
+            automation.WeekendEventStateChanged -=
+                Automation_WeekendEventStateChanged;
+
+            automation.WeekendEventConfigApplied -=
+                Automation_WeekendEventConfigApplied;
         }
 
 
@@ -101,6 +128,11 @@ namespace ArkPilot.Views
             WeekendXpBox.Text =
                 config.WeekendXpMultiplier.ToString();
 
+            LoadOriginalConfig();
+
+            LoadActiveConfigState();
+
+            LoadRestartRequiredState();
 
             StatusText.Text =
                 "⚪ Configuration chargée";
@@ -116,6 +148,17 @@ namespace ArkPilot.Views
             object sender,
             RoutedEventArgs e)
         {
+            if (automation.WeekendEventOperationInProgress)
+            {
+                StatusText.Foreground =
+                    Brushes.Yellow;
+
+                StatusText.Text =
+                    "🟡 Application de la configuration déjà en cours...";
+
+                return;
+            }
+
             try
             {
                 ServerConfig config =
@@ -379,6 +422,8 @@ namespace ArkPilot.Views
 
                 automation.ReloadConfig();
 
+                automation.CheckWeekendEventNow();
+
 
                 WeekendPeriodText.Text =
                     $"Début : {GetDayName(config.WeekendStartDay)} " +
@@ -387,14 +432,79 @@ namespace ArkPilot.Views
                     $"{config.WeekendEndHour:D2}:{config.WeekendEndMinute:D2}";
 
 
-                StatusOK(
-                    "✔ Événement week-end sauvegardé");
+                if (automation.WeekendEventActive == true)
+                {
+                    StatusText.Foreground =
+                        Brushes.Yellow;
+
+                    StatusText.Text =
+                        "🟡 Modification sauvegardée — application en attente...";
+                }
+                else
+                {
+                    StatusOK(
+                        "✔ Configuration week-end préparée");
+                }
             }
             catch (Exception ex)
             {
                 StatusError(
                     ex.Message);
             }
+        }
+
+
+        // =========================
+        // LOAD ORIGINAL CONFIG
+        // =========================
+
+        private void LoadOriginalConfig()
+        {
+            OriginalEventConfig? original =
+                automation.GetOriginalEventConfig();
+
+
+            if (original == null)
+            {
+                OriginalTamingText.Text = "--";
+
+                OriginalWildDinoFoodDrainText.Text = "--";
+
+                OriginalHarvestText.Text = "--";
+
+                OriginalBabyMatureText.Text = "--";
+
+                OriginalBabyCuddleIntervalText.Text = "--";
+
+                OriginalXpText.Text = "--";
+
+                return;
+            }
+
+
+            OriginalTamingText.Text =
+                original.TamingMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
+
+            OriginalWildDinoFoodDrainText.Text =
+                original.WildDinoFoodDrainMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
+
+            OriginalHarvestText.Text =
+                original.HarvestMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
+
+            OriginalBabyMatureText.Text =
+                original.BabyMatureMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
+
+            OriginalBabyCuddleIntervalText.Text =
+                original.BabyCuddleIntervalMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
+
+            OriginalXpText.Text =
+                original.XpMultiplier.ToString(
+                    CultureInfo.InvariantCulture);
         }
 
 
@@ -458,6 +568,7 @@ namespace ArkPilot.Views
                     return;
                 }
 
+                LoadOriginalConfig();
 
                 StatusOK(
                     "✅ Configuration actuelle définie comme origine");
@@ -469,7 +580,7 @@ namespace ArkPilot.Views
             }
             finally
             {
-                SetOriginalConfigButton.IsEnabled = true;
+                LoadActiveConfigState();
             }
         }
 
@@ -493,6 +604,175 @@ namespace ArkPilot.Views
 
                 _ => "Inconnu"
             };
+        }
+
+
+        // =========================
+        // WEEKEND EVENT CONFIG APPLIED
+        // =========================
+
+        private void Automation_WeekendEventConfigApplied()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                StatusText.Foreground =
+                    Brushes.Orange;
+
+                StatusText.Text =
+                    "⚠ Configuration week-end mise à jour — redémarrage requis";
+            });
+        }
+
+
+        // =========================
+        // WEEKEND EVENT STATE CHANGED
+        // =========================
+
+        private void Automation_WeekendEventStateChanged()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                LoadActiveConfigState();
+
+                LoadRestartRequiredState();
+            });
+        }
+
+        // =========================
+        // LOAD ACTIVE CONFIG STATE
+        // =========================
+
+        private void LoadActiveConfigState()
+        {
+            bool? active =
+                automation.WeekendEventActive;
+
+            SetOriginalConfigButton.IsEnabled =
+                active != true;
+
+            OriginalConfigWarningText.Visibility =
+                active == true
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            if (active == true)
+            {
+                WeekendConfigStateText.Text =
+                    "CONFIGURATION ACTIVE";
+
+                WeekendConfigStateText.Foreground =
+                    Brushes.LightGreen;
+            }
+            else if (active == false)
+            {
+                WeekendConfigStateText.Text =
+                    "CONFIGURATION EN ATTENTE";
+
+                WeekendConfigStateText.Foreground =
+                    Brushes.Gray;
+            }
+            else
+            {
+                WeekendConfigStateText.Text =
+                    "ÉTAT INCONNU";
+
+                WeekendConfigStateText.Foreground =
+                    Brushes.Orange;
+            }
+
+            if (active == true)
+            {
+                OriginalConfigStateText.Text =
+                    "CONFIGURATION EN ATTENTE";
+
+                OriginalConfigStateText.Foreground =
+                    Brushes.Gray;
+            }
+            else if (active == false)
+            {
+                OriginalConfigStateText.Text =
+                    "CONFIGURATION ACTIVE";
+
+                OriginalConfigStateText.Foreground =
+                    Brushes.LightSkyBlue;
+            }
+            else
+            {
+                OriginalConfigStateText.Text =
+                    "ÉTAT INCONNU";
+
+                OriginalConfigStateText.Foreground =
+                    Brushes.Orange;
+            }
+
+
+            WeekendArrowText.Foreground =
+                Brushes.Gray;
+
+            WeekArrowText.Foreground =
+                Brushes.Gray;
+
+            WeekendTitleText.Foreground =
+                Brushes.Gray;
+
+            WeekTitleText.Foreground =
+                Brushes.Gray;
+
+
+            if (active == true)
+            {
+                ActiveConfigText.Text =
+                    "🎉 WEEK-END ACTIF";
+
+                ActiveConfigText.Foreground =
+                    Brushes.LightGreen;
+
+                WeekendArrowText.Foreground =
+                    Brushes.LightGreen;
+
+                WeekendTitleText.Foreground =
+                    Brushes.LightGreen;
+
+                return;
+            }
+
+
+            if (active == false)
+            {
+                ActiveConfigText.Text =
+                    "📅 SEMAINE ACTIVE";
+
+                ActiveConfigText.Foreground =
+                    Brushes.LightSkyBlue;
+
+                WeekArrowText.Foreground =
+                    Brushes.LightSkyBlue;
+
+                WeekTitleText.Foreground =
+                    Brushes.LightSkyBlue;
+
+                return;
+            }
+
+
+            ActiveConfigText.Text =
+                "ÉTAT INCONNU";
+
+            ActiveConfigText.Foreground =
+                Brushes.Orange;
+        }
+
+
+        // =========================
+        // LOAD RESTART REQUIRED STATE
+        // =========================
+
+        private void LoadRestartRequiredState()
+        {
+            RestartRequiredBorder.Visibility =
+                automation.WeekendRestartRequired
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
 

@@ -56,7 +56,7 @@ namespace ArkPilot.Managers
                     NormalizeGame(nitradoInfo.Version);
 
                 info.SlotsUsed =
-                    nitradoInfo.SlotsUsed;
+                    _monitor.PlayerCount;
 
                 info.SlotsMax =
                     nitradoInfo.SlotsMax;

@@ -75,7 +75,12 @@
                 <controls:ActionButton
                     x:Name="FullBackupButton"
                     Icon="📦"
-                    Text="Sauvegarde complète"/>
+                    Text="Sauvegarde du monde"/>
+
+                <controls:ActionButton
+                    x:Name="ServerBackupButton"
+                    Icon="🗄"
+                    Text="Sauvegarde serveur complète"/>
 
                 <controls:ActionButton
                     x:Name="OpenFolderButton"
@@ -117,8 +122,8 @@
                     x:Name="HistoryList"
                     Grid.Row="1"
                     BorderThickness="0"
-                    Background="Transparent"/>
-
+                    Background="Transparent"
+                    Foreground="{StaticResource BrushTextPrimary}"/>
             </Grid>
 
         </Border>

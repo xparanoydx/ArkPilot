@@ -225,6 +225,154 @@ namespace ArkPilot.Managers
             return success;
         }
 
+
+        // =========================
+        // SAUVEGARDE SERVEUR COMPLÈTE
+        // =========================
+
+        public async Task<bool> CreateServerBackupAsync()
+        {
+            bool success = false;
+
+
+            await taskQueue.Enqueue(
+                "Sauvegarde complète du serveur ARK",
+                async () =>
+                {
+                    backupService.SaveNow();
+
+
+                    LogService.Info(
+                        "Attente de la fin du SaveWorld...");
+
+
+                    await Task.Delay(
+                        TimeSpan.FromSeconds(10));
+
+
+                    string backupName =
+                        $"ServerBackup_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
+
+
+                    string backupRoot =
+                        GetBackupRootFolder();
+
+
+                    string temporaryFolder =
+                        Path.Combine(
+                            backupRoot,
+                            backupName);
+
+
+                    string savedArksFolder =
+                        Path.Combine(
+                            temporaryFolder,
+                            "SavedArks");
+
+
+                    string configFolder =
+                        Path.Combine(
+                            temporaryFolder,
+                            "Config",
+                            "WindowsServer");
+
+
+                    string zipFile =
+                        Path.Combine(
+                            backupRoot,
+                            backupName + ".zip");
+
+
+                    Directory.CreateDirectory(
+                        temporaryFolder);
+
+
+                    LogService.Info(
+                        "Téléchargement de SavedArks...");
+
+
+                    bool savedArksSuccess =
+                        await transferManager.DownloadFolderRecursiveAsync(
+                            "/arksa/ShooterGame/Saved/SavedArks/",
+                            savedArksFolder);
+
+
+                    if (!savedArksSuccess)
+                    {
+                        LogService.Error(
+                            "Le téléchargement de SavedArks a échoué.");
+
+                        success = false;
+
+                        return;
+                    }
+
+
+                    LogService.Info(
+                        "Téléchargement de la configuration serveur...");
+
+
+                    bool configSuccess =
+                        await transferManager.DownloadFolderRecursiveAsync(
+                            "/arksa/ShooterGame/Saved/Config/WindowsServer/",
+                            configFolder);
+
+
+                    if (!configSuccess)
+                    {
+                        LogService.Error(
+                            "Le téléchargement de la configuration serveur a échoué.");
+
+                        success = false;
+
+                        return;
+                    }
+
+
+                    LogService.Info(
+                        "Création de l'archive serveur ZIP...");
+
+
+                    bool zipSuccess =
+                        zipService.CreateArchive(
+                            temporaryFolder,
+                            zipFile);
+
+
+                    if (!zipSuccess)
+                    {
+                        LogService.Error(
+                            "La compression de la sauvegarde serveur a échoué.");
+
+                        success = false;
+
+                        return;
+                    }
+
+
+                    try
+                    {
+                        zipService.DeleteFolder(
+                            temporaryFolder);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogService.Warning(
+                            $"Archive créée, mais le dossier temporaire n'a pas pu être supprimé : {ex.Message}");
+                    }
+
+
+                    success = true;
+
+
+                    LogService.Success(
+                        $"Sauvegarde serveur complète créée : {zipFile}");
+                });
+
+
+            return success;
+        }
+
         // =========================
         // HISTORIQUE
         // =========================
@@ -352,6 +500,123 @@ namespace ArkPilot.Managers
             }
 
             return $"{size:0.##} {units[index]}";
+        }
+
+
+        // =========================
+        // NETTOYAGE DES SAUVEGARDES
+        // =========================
+
+        public int CleanOldBackups(
+            int backupsToKeep = 10)
+        {
+            string folder =
+                GetBackupRootFolder();
+
+
+            var backupFiles =
+                Directory
+                    .GetFiles(
+                        folder,
+                        "*.zip",
+                        SearchOption.TopDirectoryOnly)
+                    .Select(file =>
+                        new FileInfo(file))
+                    .OrderByDescending(file =>
+                        file.LastWriteTime)
+                    .ToList();
+
+
+            int deletedCount =
+                0;
+
+
+            foreach (var backup in
+                     backupFiles.Skip(backupsToKeep))
+            {
+                try
+                {
+                    backup.Delete();
+
+                    deletedCount++;
+
+
+                    LogService.Info(
+                        $"Ancienne sauvegarde supprimée : {backup.Name}");
+                }
+                catch (Exception ex)
+                {
+                    LogService.Warning(
+                        $"Suppression impossible : {backup.Name} - {ex.Message}");
+                }
+            }
+
+
+            return deletedCount;
+        }
+
+
+        // =========================
+        // STATISTIQUES SAUVEGARDES
+        // =========================
+
+        public int GetBackupCount()
+        {
+            string folder =
+                GetBackupRootFolder();
+
+
+            return Directory
+                .GetFiles(
+                    folder,
+                    "*.zip",
+                    SearchOption.TopDirectoryOnly)
+                .Length;
+        }
+
+
+        public long GetTotalBackupSize()
+        {
+            string folder =
+                GetBackupRootFolder();
+
+
+            long totalSize = 0;
+
+
+            foreach (string file in
+                     Directory.GetFiles(
+                         folder,
+                         "*",
+                         SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    totalSize +=
+                        new FileInfo(file).Length;
+                }
+                catch
+                {
+                }
+            }
+
+
+            foreach (string directory in
+                     Directory.GetDirectories(folder))
+            {
+                totalSize +=
+                    GetDirectorySize(directory);
+            }
+
+
+            return totalSize;
+        }
+
+
+        public string GetFormattedTotalBackupSize()
+        {
+            return FormatSize(
+                GetTotalBackupSize());
         }
 
         // =========================

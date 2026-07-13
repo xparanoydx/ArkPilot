@@ -21,6 +21,9 @@ namespace ArkPilot
 
         public RconEngine Rcon => rcon;
 
+        public AutomationService Automation =>
+            _automation;
+
         public ServerMonitor? Monitor => monitor;
 
         private readonly ArkService ark;
@@ -32,6 +35,8 @@ namespace ArkPilot
 
 
         private NavigationService navigation;
+
+        private bool logsExpanded;
 
         private ServerMonitor? monitor;
 
@@ -437,7 +442,35 @@ namespace ArkPilot
         }
 
 
+        // =========================
+        // TOGGLE LOGS
+        // =========================
 
+        private void ToggleLogs_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            logsExpanded =
+                !logsExpanded;
+
+
+            if (logsExpanded)
+            {
+                LogRow.Height =
+                    new GridLength(450);
+
+                ToggleLogsButton.Content =
+                    "⛶ Réduire les logs";
+            }
+            else
+            {
+                LogRow.Height =
+                    new GridLength(160);
+
+                ToggleLogsButton.Content =
+                    "⛶ Agrandir les logs";
+            }
+        }
 
 
 

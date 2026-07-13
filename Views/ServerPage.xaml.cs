@@ -17,6 +17,7 @@ namespace ArkPilot.Views
         private readonly NitradoService nitradoService;
         private readonly DashboardManager dashboardManager;
         private readonly DialogService dialog = new();
+        private readonly AutomationService automation;
 
         public ServerPage(RconEngine engine)
         {
@@ -33,6 +34,9 @@ namespace ArkPilot.Views
             var mainWindow =
                 (MainWindow)Application.Current.MainWindow;
 
+            automation =
+                mainWindow.Automation;
+
             ark = new ArkService(rcon);
 
             backupService =
@@ -47,10 +51,26 @@ namespace ArkPilot.Views
                     backupService,
                     nitradoService);
 
+            monitor.Updated +=
+                Monitor_Updated;
+
             Loaded += async (_, __) =>
             {
                 await RefreshServerInfoAsync();
             };
+        }
+
+
+        // =========================
+        // MONITOR UPDATED
+        // =========================
+
+        private void Monitor_Updated()
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                await RefreshServerInfoAsync();
+            });
         }
 
         private async System.Threading.Tasks.Task RefreshServerInfoAsync()
@@ -140,7 +160,16 @@ namespace ArkPilot.Views
             if (!dialog.Confirm("Démarrer le serveur via Nitrado ?"))
                 return;
 
-            await nitradoService.StartAsync();
+            string result =
+                await nitradoService.StartAsync();
+
+
+            if (result != "NITRADO_NOT_CONFIGURED" &&
+                result != "NITRADO_ERROR")
+            {
+                automation.ClearWeekendRestartRequired();
+            }
+
 
             await RefreshServerInfoAsync();
         }
@@ -164,7 +193,17 @@ namespace ArkPilot.Views
             if (!dialog.Confirm("Redémarrer le serveur via Nitrado ?"))
                 return;
 
-            await nitradoService.RestartAsync();
+
+            string result =
+                await nitradoService.RestartAsync();
+
+
+            if (result != "NITRADO_NOT_CONFIGURED" &&
+                result != "NITRADO_ERROR")
+            {
+                automation.ClearWeekendRestartRequired();
+            }
+
 
             await RefreshServerInfoAsync();
         }

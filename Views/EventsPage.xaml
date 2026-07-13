@@ -3,10 +3,12 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Background="#1E1E2E">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  HorizontalContentAlignment="Stretch">
 
         <StackPanel Margin="30"
-                    Width="560">
+                    HorizontalAlignment="Stretch">
 
             <TextBlock Text="🎉 Événements automatiques"
                        FontSize="26"
@@ -18,308 +20,719 @@
                        Foreground="#B8B8C8"
                        Margin="0,0,0,25"/>
 
-            <Border Background="#181827"
-        CornerRadius="8"
-        Padding="15"
-        Margin="0,0,0,20">
-
-                <StackPanel>
-
-                    <TextBlock Text="📅 Période de l'événement"
-                   Foreground="White"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Margin="0,0,0,10"/>
-
-                    <TextBlock x:Name="WeekendPeriodText"
-                   Foreground="#B8B8C8"
-                   Text="Début : --&#x0a;Fin : --"
-                   Margin="0,0,0,15"/>
-
-
-                    <TextBlock Text="Début"
-                   Foreground="White"
-                   FontWeight="Bold"
-                   Margin="0,0,0,5"/>
-
-                    <Grid Margin="0,0,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="70"/>
-                        </Grid.ColumnDefinitions>
-
-                        <ComboBox x:Name="WeekendStartDayBox"
-                      Grid.Column="0"
-                      Height="35">
-
-                            <ComboBoxItem Content="Dimanche"/>
-                            <ComboBoxItem Content="Lundi"/>
-                            <ComboBoxItem Content="Mardi"/>
-                            <ComboBoxItem Content="Mercredi"/>
-                            <ComboBoxItem Content="Jeudi"/>
-                            <ComboBoxItem Content="Vendredi"/>
-                            <ComboBoxItem Content="Samedi"/>
-
-                        </ComboBox>
-
-                        <TextBox x:Name="WeekendStartHourBox"
-                     Grid.Column="1"
-                     Height="35"
-                     Margin="10,0,0,0"/>
-
-                        <TextBlock Grid.Column="2"
-                       Text=":"
-                       Foreground="White"
-                       FontSize="20"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendStartMinuteBox"
-                     Grid.Column="3"
-                     Height="35"/>
-
-                    </Grid>
-
-
-                    <TextBlock Text="Fin"
-                   Foreground="White"
-                   FontWeight="Bold"
-                   Margin="0,0,0,5"/>
-
-                    <Grid>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="70"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="70"/>
-                        </Grid.ColumnDefinitions>
-
-                        <ComboBox x:Name="WeekendEndDayBox"
-                      Grid.Column="0"
-                      Height="35">
-
-                            <ComboBoxItem Content="Dimanche"/>
-                            <ComboBoxItem Content="Lundi"/>
-                            <ComboBoxItem Content="Mardi"/>
-                            <ComboBoxItem Content="Mercredi"/>
-                            <ComboBoxItem Content="Jeudi"/>
-                            <ComboBoxItem Content="Vendredi"/>
-                            <ComboBoxItem Content="Samedi"/>
-
-                        </ComboBox>
-
-                        <TextBox x:Name="WeekendEndHourBox"
-                     Grid.Column="1"
-                     Height="35"
-                     Margin="10,0,0,0"/>
-
-                        <TextBlock Grid.Column="2"
-                       Text=":"
-                       Foreground="White"
-                       FontSize="20"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
 
-                        <TextBox x:Name="WeekendEndMinuteBox"
-                     Grid.Column="3"
-                     Height="35"/>
-
-                    </Grid>
-
-                </StackPanel>
-
-            </Border>
-
-            <Border Background="#2A2A3D"
-                    CornerRadius="8"
-                    Padding="20">
-
-                <StackPanel>
-
-                    <CheckBox x:Name="WeekendEventBox"
-                        Content="Activer l'événement week-end"
-                        Foreground="White"
-                        FontSize="16"
-                        Margin="0,0,0,20"
-                        Checked="WeekendEventBox_Changed"
-                        Unchecked="WeekendEventBox_Changed"/>
-                    
-                    <StackPanel x:Name="WeekendOptionsPanel">
-
-                    <TextBlock Text="Multiplicateur Taming"
-                        Foreground="White"/>
-
-                    <Grid Margin="0,5,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendTamingEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendTamingBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
-                    
-
-                    <TextBlock Text="Wild Dino Food Drain"
-                        Foreground="White"/>
-
-                    <Grid Margin="0,5,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendWildDinoFoodDrainEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendWildDinoFoodDrainBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
-                    
-
-                    <TextBlock Text="Multiplicateur Récolte"
-                        Foreground="White"/>
-
-                    <Grid Margin="0,5,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendHarvestEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendHarvestBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
-
-
-                    <TextBlock Text="Multiplicateur Croissance bébés"
-                         Foreground="White"/>
-
-                    <Grid Margin="0,5,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendBabyMatureEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendBabyMatureBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
-
-
-                    <TextBlock Text="Intervalle câlins bébés"
-                        Foreground="White"/>
-
-                    <Grid Margin="0,5,0,20">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendBabyCuddleIntervalEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendBabyCuddleIntervalBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
-                    
-
-                    <TextBlock Text="Multiplicateur XP"
-                        Foreground="White"/>
-
-                    <Grid Margin="0,5,0,15">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <CheckBox x:Name="WeekendXpEnabledBox"
-                            Grid.Column="0"
-                            Content="ON"
-                            Foreground="White"
-                            VerticalAlignment="Center"/>
-
-                        <TextBox x:Name="WeekendXpBox"
-                            Grid.Column="1"
-                            Height="35"/>
-
-                    </Grid>
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+
+                <!-- ========================= -->
+                <!-- PERIODE -->
+                <!-- ========================= -->
+
+                <Border Grid.Row="0"
+                        Grid.Column="0"
+                        Background="#181827"
+                        CornerRadius="8"
+                        Padding="15"
+                        Margin="0,0,0,20">
+
+                    <StackPanel>
+
+                        <TextBlock Text="📅 Période de l'événement"
+                                   Foreground="White"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock x:Name="WeekendPeriodText"
+                                   Foreground="#B8B8C8"
+                                   Text="Début : --&#x0a;Fin : --"
+                                   Margin="0,0,0,15"/>
+
+
+                        <TextBlock Text="Début"
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,5"/>
+
+                        <Grid Margin="0,0,0,15">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="70"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox x:Name="WeekendStartDayBox"
+                                      Grid.Column="0"
+                                      Height="35">
+
+                                <ComboBoxItem Content="Dimanche"/>
+                                <ComboBoxItem Content="Lundi"/>
+                                <ComboBoxItem Content="Mardi"/>
+                                <ComboBoxItem Content="Mercredi"/>
+                                <ComboBoxItem Content="Jeudi"/>
+                                <ComboBoxItem Content="Vendredi"/>
+                                <ComboBoxItem Content="Samedi"/>
+
+                            </ComboBox>
+
+                            <TextBox x:Name="WeekendStartHourBox"
+                                     Grid.Column="1"
+                                     Height="35"
+                                     Margin="10,0,0,0"/>
+
+                            <TextBlock Grid.Column="2"
+                                       Text=":"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBox x:Name="WeekendStartMinuteBox"
+                                     Grid.Column="3"
+                                     Height="35"/>
+
+                        </Grid>
+
+
+                        <TextBlock Text="Fin"
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,5"/>
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="70"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox x:Name="WeekendEndDayBox"
+                                      Grid.Column="0"
+                                      Height="35">
+
+                                <ComboBoxItem Content="Dimanche"/>
+                                <ComboBoxItem Content="Lundi"/>
+                                <ComboBoxItem Content="Mardi"/>
+                                <ComboBoxItem Content="Mercredi"/>
+                                <ComboBoxItem Content="Jeudi"/>
+                                <ComboBoxItem Content="Vendredi"/>
+                                <ComboBoxItem Content="Samedi"/>
+
+                            </ComboBox>
+
+                            <TextBox x:Name="WeekendEndHourBox"
+                                     Grid.Column="1"
+                                     Height="35"
+                                     Margin="10,0,0,0"/>
+
+                            <TextBlock Grid.Column="2"
+                                       Text=":"
+                                       Foreground="White"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBox x:Name="WeekendEndMinuteBox"
+                                     Grid.Column="3"
+                                     Height="35"/>
+
+                        </Grid>
 
                     </StackPanel>
 
-                    <Button x:Name="SetOriginalConfigButton"
-                            Width="300"
-                            Height="40"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,0,10"
-                            Content="📌 Définir la configuration actuelle comme origine"
-                            Click="SetOriginalConfig_Click"/>
+                </Border>
 
 
-                    <Button x:Name="SaveEventButton"
-                            Width="180"
-                            Height="40"
-                            HorizontalAlignment="Left"
-                            Content="💾 Sauvegarder"
-                            Click="SaveEvent_Click"/>
+                <!-- ========================= -->
+                <!-- MULTIPLICATEURS WEEK-END -->
+                <!-- ========================= -->
+
+                <Border Grid.Row="1"
+                        Grid.Column="0"
+                        Background="#2A2A3D"
+                        CornerRadius="8"
+                        Padding="20">
+
+                    <StackPanel>
+
+                        <TextBlock Text="🎉 Multiplicateurs week-end"
+                                   Foreground="White"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,20"/>
+
+                        <Border x:Name="WeekendConfigStateBorder"
+                                    Background="#181827"
+                                    CornerRadius="6"
+                                    Padding="8"
+                                    Margin="0,0,0,12">
+
+                            <TextBlock x:Name="WeekendConfigStateText"
+                                        Text="CONFIGURATION EN ATTENTE"
+                                        Foreground="Gray"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center"/>
+
+                        </Border>
+
+                        <CheckBox x:Name="WeekendEventBox"
+                                  Content="Activer l'événement week-end"
+                                  Foreground="White"
+                                  FontSize="16"
+                                  Margin="0,0,0,20"
+                                  Checked="WeekendEventBox_Changed"
+                                  Unchecked="WeekendEventBox_Changed"/>
 
 
-                    <Border Margin="0,20,0,0"
-                            Background="#181827"
+                        <StackPanel x:Name="WeekendOptionsPanel">
+
+                            <!-- TAMING -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Multiplicateur Taming"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendTamingEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendTamingBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <!-- FOOD DRAIN -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Wild Dino Food Drain"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendWildDinoFoodDrainEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendWildDinoFoodDrainBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <!-- RECOLTE -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Multiplicateur Récolte"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendHarvestEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendHarvestBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <!-- CROISSANCE -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Multiplicateur Croissance bébés"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendBabyMatureEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendBabyMatureBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <!-- CALINS -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Intervalle câlins bébés"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendBabyCuddleIntervalEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendBabyCuddleIntervalBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+
+                            <!-- XP -->
+
+                            <Grid Height="75">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="Multiplicateur XP"
+                                           Foreground="White"/>
+
+                                <Grid Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <CheckBox x:Name="WeekendXpEnabledBox"
+                                              Grid.Column="0"
+                                              Content="ON"
+                                              Foreground="White"
+                                              VerticalAlignment="Center"/>
+
+                                    <TextBox x:Name="WeekendXpBox"
+                                             Grid.Column="1"
+                                             Height="35"/>
+
+                                </Grid>
+
+                            </Grid>
+
+                        </StackPanel>
+
+
+                        <Button x:Name="SaveEventButton"
+                                Width="180"
+                                Height="40"
+                                HorizontalAlignment="Left"
+                                Content="💾 Sauvegarder"
+                                Click="SaveEvent_Click"/>
+
+
+                        <Border Margin="0,20,0,0"
+                                Background="#181827"
+                                CornerRadius="6"
+                                Padding="10">
+
+                            <TextBlock x:Name="StatusText"
+                                       Foreground="LightGreen"
+                                       Text="Prêt."/>
+
+                        </Border>
+
+                    </StackPanel>
+
+                </Border>
+
+
+                <!-- ========================= -->
+                <!-- INDICATEUR CENTRAL -->
+                <!-- ========================= -->
+
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+                    <TextBlock x:Name="WeekendTitleText"
+                                Text="WEEK-END"
+                                Foreground="#B8B8C8"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"/>
+                    
+                    <TextBlock x:Name="WeekendArrowText"
+                                Text="←"
+                                Foreground="White"
+                                FontSize="38"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                Margin="0,5"/>
+                    
+                    <Border Background="#181827"
                             CornerRadius="6"
-                            Padding="10">
+                            Padding="8"
+                            Margin="0,8">
 
-                        <TextBlock x:Name="StatusText"
-                                   Foreground="LightGreen"
-                                   Text="Prêt."/>
+                        <TextBlock x:Name="ActiveConfigText"
+                                   Text="ÉTAT INCONNU"
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   FontSize="13"
+                                   TextAlignment="Center"/>
+
+                    </Border>
+
+                    <TextBlock x:Name="WeekArrowText"
+                                Text="→"
+                                Foreground="White"
+                                FontSize="38"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                Margin="0,5"/>
+
+                    <TextBlock x:Name="WeekTitleText"
+                                Text="SEMAINE"
+                                Foreground="#B8B8C8"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"/>
+                    
+                    <Border x:Name="RestartRequiredBorder"
+                            Background="#3A2A18"
+                            BorderBrush="Orange"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="10"
+                            Margin="0,25,0,0"
+                            Visibility="Collapsed">
+
+                        <TextBlock x:Name="RestartRequiredText"
+                            Text="⚠ REDÉMARRAGE SERVEUR REQUIS"
+                            Foreground="Orange"
+                            FontWeight="Bold"
+                            FontSize="12"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"
+                            Width="140"/>
 
                     </Border>
 
                 </StackPanel>
 
-            </Border>
+
+                <!-- ========================= -->
+                <!-- COLONNE ORIGINE -->
+                <!-- ========================= -->
+
+                <Border Grid.Row="1"
+                        Grid.Column="2"
+                        Background="#2A2A3D"
+                        CornerRadius="8"
+                        Padding="20"
+                        VerticalAlignment="Stretch">
+
+                    <StackPanel>
+
+                        <TextBlock Text="📌 Multiplicateurs en semaine (Origine)"
+                                   Foreground="White"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,20"/>
+
+                        <Border x:Name="OriginalConfigStateBorder"
+                                Background="#181827"
+                                CornerRadius="6"
+                                Padding="8"
+                                Margin="0,0,0,12">
+
+                            <TextBlock x:Name="OriginalConfigStateText"
+                                        Text="CONFIGURATION EN ATTENTE"
+                                        Foreground="Gray"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center"/>
+
+                        </Border>
+
+                        <Border Height="20"
+                                Background="Transparent"
+                                Margin="0,0,0,20"/>
+
+
+                        <!-- TAMING -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Multiplicateur Taming"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalTamingText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- FOOD DRAIN -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Wild Dino Food Drain"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalWildDinoFoodDrainText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- RECOLTE -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Multiplicateur Récolte"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalHarvestText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- CROISSANCE -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Multiplicateur Croissance bébés"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalBabyMatureText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- CALINS -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Intervalle câlins bébés"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalBabyCuddleIntervalText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- XP -->
+
+                        <Grid Height="75">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Multiplicateur XP"
+                                       Foreground="White"/>
+
+                            <Border Grid.Row="1"
+                                    Background="White"
+                                    Height="35">
+
+                                <TextBlock x:Name="OriginalXpText"
+                                           Text="--"
+                                           Foreground="#1E1E2E"
+                                           FontSize="16"
+                                           VerticalAlignment="Center"
+                                           Margin="10,0"/>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <Button x:Name="SetOriginalConfigButton"
+                                Width="340"
+                                Height="40"
+                                HorizontalAlignment="Left"
+                                Content="📌 Définir la configuration actuelle comme origine"
+                                Click="SetOriginalConfig_Click"/>
+
+                        <TextBlock x:Name="OriginalConfigWarningText"
+                                    Text="⚠ Impossible de définir l'origine pendant l'événement week-end"
+                                    Foreground="Orange"
+                                    FontSize="12"
+                                    TextWrapping="Wrap"
+                                    Margin="0,8,0,0"
+                                    Visibility="Collapsed"/>
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
 
         </StackPanel>
 

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using ArkPilot.Config;
+using ArkPilot.Models;
 
 namespace ArkPilot.Services
 {
@@ -40,6 +41,8 @@ namespace ArkPilot.Services
 
         private bool _weekendEventOperationInProgress;
 
+        private bool _weekendRestartRequired;
+
         private static readonly string WeekendStateFile =
             Path.Combine(
                 Environment.GetFolderPath(
@@ -47,8 +50,28 @@ namespace ArkPilot.Services
                 "ArkPilot",
                 "weekend-event-state.txt");
 
+        private static readonly string WeekendRestartRequiredStateFile =
+            Path.Combine(
+                Environment.GetFolderPath(
+                    Environment.SpecialFolder.LocalApplicationData),
+                "ArkPilot",
+                "weekend-restart-required-state.txt");
+
 
         public event Action<string>? OnLog;
+
+        public event Action? WeekendEventStateChanged;
+
+        public event Action? WeekendEventConfigApplied;
+
+        public bool? WeekendEventActive =>
+            _weekendEventActive;
+
+        public bool WeekendRestartRequired =>
+            _weekendRestartRequired;
+
+        public bool WeekendEventOperationInProgress =>
+            _weekendEventOperationInProgress;
 
 
         public AutomationService(
@@ -74,14 +97,8 @@ namespace ArkPilot.Services
 
             LoadWeekendState();
 
-            if (_weekendEventActive == null &&
-                _arkEventService.HasOriginalConfigBackup)
-            {
-                _weekendEventActive =
-                    true;
+            LoadWeekendRestartRequiredState();
 
-                SaveWeekendState();
-            }
             _lastWeekendConfigSignature =
                 GetWeekendConfigSignature();
         }
@@ -185,6 +202,58 @@ namespace ArkPilot.Services
                 _weekendEventActive =
                     active;
             }
+        }
+
+
+        // =========================
+        // LOAD WEEKEND RESTART REQUIRED STATE
+        // =========================
+
+        private void LoadWeekendRestartRequiredState()
+        {
+            if (!File.Exists(
+                WeekendRestartRequiredStateFile))
+            {
+                return;
+            }
+
+
+            string value =
+                File.ReadAllText(
+                    WeekendRestartRequiredStateFile);
+
+
+            if (bool.TryParse(
+                value,
+                out bool restartRequired))
+            {
+                _weekendRestartRequired =
+                    restartRequired;
+            }
+        }
+
+
+        // =========================
+        // SAVE WEEKEND RESTART REQUIRED STATE
+        // =========================
+
+        private void SaveWeekendRestartRequiredState()
+        {
+            string? directory =
+                Path.GetDirectoryName(
+                    WeekendRestartRequiredStateFile);
+
+
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                Directory.CreateDirectory(
+                    directory);
+            }
+
+
+            File.WriteAllText(
+                WeekendRestartRequiredStateFile,
+                _weekendRestartRequired.ToString());
         }
 
 
@@ -344,6 +413,16 @@ namespace ArkPilot.Services
 
 
         // =========================
+        // CHECK WEEKEND EVENT NOW
+        // =========================
+
+        public void CheckWeekendEventNow()
+        {
+            CheckWeekendEvent();
+        }
+
+
+        // =========================
         // CHECK WEEKEND EVENT
         // =========================
 
@@ -440,20 +519,23 @@ namespace ArkPilot.Services
 
                 SaveWeekendState();
 
+                _weekendRestartRequired =
+                    true;
+
+                SaveWeekendRestartRequiredState();
+
+                WeekendEventStateChanged?.Invoke();
+
+                WeekendEventConfigApplied?.Invoke();
+
 
                 _lastWeekendConfigSignature =
                     GetWeekendConfigSignature();
 
 
                 OnLog?.Invoke(
-                    "🔄 Automation : redémarrage requis pour appliquer l'événement");
+                    "🔄 Automation : redémarrage manuel requis pour appliquer l'événement");
 
-
-                if (_cts != null)
-                {
-                    await RunAutoRestart(
-                        _cts.Token);
-                }
             }
             finally
             {
@@ -494,20 +576,21 @@ namespace ArkPilot.Services
 
                 SaveWeekendState();
 
+                _weekendRestartRequired =
+                    true;
+
+                SaveWeekendRestartRequiredState();
+
+                WeekendEventStateChanged?.Invoke();
+
 
                 OnLog?.Invoke(
                     "✅ Automation : événement week-end désactivé");
 
 
                 OnLog?.Invoke(
-                    "🔄 Automation : redémarrage requis pour restaurer la configuration normale");
+                    "🔄 Automation : redémarrage manuel requis pour restaurer la configuration normale");
 
-
-                if (_cts != null)
-                {
-                    await RunAutoRestart(
-                        _cts.Token);
-                }
             }
             finally
             {
@@ -528,6 +611,17 @@ namespace ArkPilot.Services
 
             _rcon.Send(
                 "saveworld");
+        }
+
+
+        // =========================
+        // GET ORIGINAL EVENT CONFIG
+        // =========================
+
+        public OriginalEventConfig? GetOriginalEventConfig()
+        {
+            return _arkEventService
+                .GetOriginalEventConfig();
         }
 
 
@@ -627,6 +721,25 @@ namespace ArkPilot.Services
 
             OnLog?.Invoke(
                 "⚙ Automation : configuration rechargée");
+        }
+
+
+        // =========================
+        // CLEAR WEEKEND RESTART REQUIRED
+        // =========================
+
+        public void ClearWeekendRestartRequired()
+        {
+            _weekendRestartRequired =
+                false;
+
+            SaveWeekendRestartRequiredState();
+
+            WeekendEventStateChanged?.Invoke();
+
+
+            OnLog?.Invoke(
+                "✅ Automation : redémarrage manuel pris en compte");
         }
 
         // =========================
@@ -757,6 +870,11 @@ namespace ArkPilot.Services
 
                 OnLog?.Invoke(
                     "✅ Automation : redémarrage Nitrado demandé");
+
+                if (_weekendRestartRequired)
+                {
+                    ClearWeekendRestartRequired();
+                }
 
                 if (markDailyRestart)
                 {

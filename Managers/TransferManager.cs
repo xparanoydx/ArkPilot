@@ -217,6 +217,140 @@ namespace ArkPilot.Managers
             }
         }
 
+
+        // =========================
+        // TÉLÉCHARGEMENT RÉCURSIF D'UN DOSSIER
+        // =========================
+
+        public async Task<bool> DownloadFolderRecursiveAsync(
+            string remoteFolder,
+            string localFolder)
+        {
+            var window =
+                CreateProgressWindow(
+                    "Préparation de la sauvegarde serveur...");
+
+
+            try
+            {
+                int downloadedFiles =
+                    0;
+
+
+                bool success =
+                    await DownloadFolderRecursiveInternalAsync(
+                        remoteFolder,
+                        localFolder,
+                        window,
+                        () => downloadedFiles++);
+
+
+                if (success)
+                {
+                    window.SetProgress(100);
+
+                    await Task.Delay(500);
+                }
+
+
+                return success;
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+
+        private async Task<bool> DownloadFolderRecursiveInternalAsync(
+    string remoteFolder,
+    string localFolder,
+    TransferProgressWindow window,
+    Action fileDownloaded)
+        {
+            try
+            {
+                Directory.CreateDirectory(
+                    localFolder);
+
+
+                var items =
+                    await ftp.GetDirectoryListingAsync(
+                        remoteFolder);
+
+
+                foreach (var item in items)
+                {
+                    string localPath =
+                        Path.Combine(
+                            localFolder,
+                            item.Name);
+
+
+                    if (item.IsDirectory)
+                    {
+                        bool directorySuccess =
+                            await DownloadFolderRecursiveInternalAsync(
+                                item.FullPath + "/",
+                                localPath,
+                                window,
+                                fileDownloaded);
+
+
+                        if (!directorySuccess)
+                        {
+                            return false;
+                        }
+
+
+                        continue;
+                    }
+
+
+                    window.SetFile(
+                        item.Name);
+
+
+                    var progress =
+                        new Progress<FtpProgress>(p =>
+                        {
+                            window.SetProgress(
+                                p.Progress);
+                        });
+
+
+                    bool fileSuccess =
+                        await ftp.DownloadFileAsync(
+                            item.FullPath,
+                            localPath,
+                            progress);
+
+
+                    if (!fileSuccess)
+                    {
+                        LogService.Error(
+                            $"Échec du téléchargement : {item.FullPath}");
+
+                        return false;
+                    }
+
+
+                    fileDownloaded();
+                }
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(
+                    $"Téléchargement récursif impossible : {ex.Message}");
+
+                return false;
+            }
+        }
+
+
         // =========================
         // FENÊTRE DE PROGRESSION
         // =========================

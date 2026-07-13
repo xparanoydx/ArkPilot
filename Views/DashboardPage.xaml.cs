@@ -15,20 +15,30 @@ namespace ArkPilot.Views
         private readonly ServerMonitor monitor;
         private readonly BackupService backupService;
         private readonly DashboardManager dashboardManager;
+        private readonly AutomationService automation;
 
         public DashboardPage(RconEngine engine)
         {
             InitializeComponent();
 
             rcon = engine;
+
+            var mainWindow =
+                (MainWindow)Application.Current.MainWindow;
+
+
             monitor =
-                ((MainWindow)Application.Current.MainWindow).Monitor
+                mainWindow.Monitor
                 ?? throw new InvalidOperationException(
                     "Le moniteur serveur n'est pas initialisé.");
 
+
             backupService =
-                ((MainWindow)Application.Current.MainWindow)
-                .BackupService;
+                mainWindow.BackupService;
+
+
+            automation =
+                mainWindow.Automation;
 
             var config = ConfigManager.Load();
             var nitradoService = new NitradoService(config);
@@ -41,12 +51,17 @@ namespace ArkPilot.Views
 
             monitor.Updated += Monitor_Updated;
 
+            automation.WeekendEventStateChanged +=
+                Automation_WeekendEventStateChanged;
+
             Loaded += DashboardPage_Loaded;
             Unloaded += DashboardPage_Unloaded;
         }
 
         private async void DashboardPage_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateWeekendEventBadge();
+
             await UpdateDashboardAsync();
         }
 
@@ -192,6 +207,32 @@ namespace ArkPilot.Views
         }
 
 
+        // =========================
+        // WEEKEND EVENT STATE CHANGED
+        // =========================
+
+        private void Automation_WeekendEventStateChanged()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                UpdateWeekendEventBadge();
+            });
+        }
+
+
+        // =========================
+        // UPDATE EVENT BADGE
+        // =========================
+
+        private void UpdateWeekendEventBadge()
+        {
+            WeekendEventBadge.Visibility =
+                automation.WeekendEventActive == true
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+        }
+
+
         private async void SaveWorld_Click(object sender, RoutedEventArgs e)
         {
             backupService.SaveNow();
@@ -218,6 +259,9 @@ namespace ArkPilot.Views
         public void Dispose()
         {
             monitor.Updated -= Monitor_Updated;
+
+            automation.WeekendEventStateChanged -=
+                Automation_WeekendEventStateChanged;
 
             Loaded -= DashboardPage_Loaded;
             Unloaded -= DashboardPage_Unloaded;

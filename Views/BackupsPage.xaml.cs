@@ -20,7 +20,13 @@ namespace ArkPilot.Views
 
             OpenFolderButton.Click += OpenFolderButton_Click;
 
+            CleanButton.Click +=
+                CleanButton_Click;
+
             FullBackupButton.Click += FullBackupButton_Click;
+
+            ServerBackupButton.Click +=
+                ServerBackupButton_Click;
 
             Header.Title = "💾 Backup Manager";
             Header.Subtitle = "Gestion des sauvegardes locales du serveur";
@@ -67,6 +73,46 @@ namespace ArkPilot.Views
             RefreshHistory();
         }
 
+
+        // =========================
+        // CLEAN BUTTON
+        // =========================
+
+
+        private void CleanButton_Click(
+    object? sender,
+    EventArgs e)
+        {
+            MessageBoxResult result =
+                MessageBox.Show(
+                    "Supprimer les anciennes sauvegardes et conserver uniquement les 10 plus récentes ?",
+                    "Nettoyage des sauvegardes",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+
+            if (result != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+
+            int deletedCount =
+                backupManager.CleanOldBackups();
+
+
+            RefreshHistory();
+
+            UpdateBackupInfo();
+
+
+            MessageBox.Show(
+                $"{deletedCount} sauvegarde(s) supprimée(s).",
+                "Backup Manager",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+
         private async void FullBackupButton_Click(
     object? sender,
     EventArgs e)
@@ -81,6 +127,8 @@ namespace ArkPilot.Views
                 if (success)
                 {
                     RefreshHistory();
+
+                    UpdateBackupInfo();
 
                     MessageBox.Show(
                         "La sauvegarde du monde est terminée.",
@@ -111,6 +159,62 @@ namespace ArkPilot.Views
             finally
             {
                 FullBackupButton.IsButtonEnabled = true;
+            }
+        }
+
+
+        private async void ServerBackupButton_Click(
+    object? sender,
+    EventArgs e)
+        {
+            try
+            {
+                ServerBackupButton.IsButtonEnabled =
+                    false;
+
+
+                bool success =
+                    await backupManager.CreateServerBackupAsync();
+
+
+                if (success)
+                {
+                    RefreshHistory();
+
+                    UpdateBackupInfo();
+
+
+                    MessageBox.Show(
+                        "La sauvegarde complète du serveur est terminée.",
+                        "Backup Manager",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Le téléchargement de la sauvegarde serveur a échoué.",
+                        "Backup Manager",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(
+                    $"Erreur sauvegarde serveur complète : {ex.Message}");
+
+
+                MessageBox.Show(
+                    ex.Message,
+                    "Erreur",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally
+            {
+                ServerBackupButton.IsButtonEnabled =
+                    true;
             }
         }
 
@@ -183,9 +287,17 @@ namespace ArkPilot.Views
                     ? "--"
                     : backupManager.LastBackupTime.ToString("HH:mm:ss");
 
-            ArchiveCard.Value = "0";
 
-            SizeCard.Value = "0 MB";
+            ArchiveCard.Value =
+                backupManager
+                    .GetBackupCount()
+                    .ToString();
+
+
+            SizeCard.Value =
+                backupManager
+                    .GetFormattedTotalBackupSize();
+
 
             FtpCard.Value =
                 "Connecté";
