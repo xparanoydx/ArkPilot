@@ -6,7 +6,7 @@
 
 <p align="center">
 
-![Release](https://img.shields.io/github/v/release/xparanoydx/ArkPilot?style=for-the-badge)
+![Release](https://img.shields.io/github/v/release/xparanoydx/ArkPilot?sort=date&style=for-the-badge)
 ![Downloads](https://img.shields.io/github/downloads/xparanoydx/ArkPilot/total?style=for-the-badge)
 ![License](https://img.shields.io/github/license/xparanoydx/ArkPilot?style=for-the-badge)
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-blue?style=for-the-badge)
