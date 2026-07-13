@@ -49,7 +49,7 @@
 
 ### Automatic Events
 
-![ArkPilot Automatic Events](Screenshots/Events.png)
+![ArkPilot Automatic Events](Screenshots/Event.png)
 
 ### Backup Manager
 
