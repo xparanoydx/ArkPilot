@@ -30,8 +30,10 @@
 | Dashboard | ✅ |
 | RCON | ✅ |
 | FTP Explorer | ✅ |
-| Backup Manager | ✅ |
+| World Backups | ✅ |
+| Full Server Backups | ✅ |
 | ZIP Backups | ✅ |
+| Automatic Weekend Events | ✅ |
 | Live Logs | ✅ |
 | Nitrado API | ✅ |
 | Players Management | ✅ |
@@ -43,19 +45,15 @@
 
 ### Dashboard
 
-Screenshots will be added in the next release.
+![ArkPilot Dashboard](Screenshots/Dashboard.png)
 
-### FTP Explorer
+### Automatic Events
 
-Screenshots will be added in the next release.
+![ArkPilot Automatic Events](Screenshots/Events.png)
 
 ### Backup Manager
 
-Screenshots will be added in the next release.
-
-### RCON Console
-
-Screenshots will be added in the next release.
+![ArkPilot Backup Manager](Screenshots/BackupManager.png)
 
 ---
 
@@ -67,6 +65,7 @@ Screenshots will be added in the next release.
 
 ```text
 Templates/appsettings.example.json
+
 ```
 
 to:
