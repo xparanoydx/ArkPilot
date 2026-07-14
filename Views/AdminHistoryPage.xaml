@@ -1,0 +1,101 @@
+﻿<Page x:Class="ArkPilot.Views.AdminHistoryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBackground}">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- HEADER -->
+        <StackPanel>
+            <TextBlock Text="Historique administration"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource BrushTextPrimary}"/>
+
+            <TextBlock Text="Suivi des actions administrateur effectuées depuis ArkPilot"
+                       FontSize="14"
+                       Foreground="{StaticResource BrushTextSecondary}"/>
+        </StackPanel>
+
+
+        <!-- TOOLBAR -->
+        <Border Grid.Row="1"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                Margin="0,25,0,15">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="SearchBox"
+                         Width="260"
+                         Height="38"
+                         ToolTip="Rechercher une action..."
+                         Background="{StaticResource BrushBackground}"
+                         Foreground="{StaticResource BrushTextPrimary}"
+                         BorderBrush="{StaticResource BrushBorder}"
+                         BorderThickness="1"
+                         TextChanged="SearchBox_TextChanged"/>
+
+                <TextBlock x:Name="HistoryCountText"
+                           Grid.Column="1"
+                           Text="📜 Actions : 0"
+                           Foreground="{StaticResource BrushTextPrimary}"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+
+                <Button Grid.Column="2"
+                        Content="🗑 Effacer l'historique"
+                        Width="190"
+                        Click="ClearHistory_Click"/>
+            </Grid>
+
+        </Border>
+
+
+        <!-- HISTORY GRID -->
+        <DataGrid x:Name="HistoryGrid"
+                  Grid.Row="2"
+                  Style="{StaticResource ModernDataGridStyle}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Date"
+                                    Binding="{Binding Timestamp, StringFormat=dd/MM/yyyy HH:mm:ss}"
+                                    Width="170"/>
+
+                <DataGridTextColumn Header="Action"
+                                    Binding="{Binding Action}"
+                                    Width="180"/>
+
+                <DataGridTextColumn Header="Cible"
+                                    Binding="{Binding Target}"
+                                    Width="200"/>
+
+                <DataGridTextColumn Header="Détails"
+                                    Binding="{Binding Details}"
+                                    Width="*"/>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</Page>

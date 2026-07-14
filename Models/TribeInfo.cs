@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ArkPilot.Models
+﻿namespace ArkPilot.Models
 {
-    internal class TribeInfo
+    public class TribeInfo
     {
+        public string Name { get; set; } = "";
+
+        public string Id { get; set; } = "";
+
+        public int MemberCount { get; set; }
     }
 }

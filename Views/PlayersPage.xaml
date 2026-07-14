@@ -88,18 +88,9 @@
         <DataGrid x:Name="PlayersGrid"
                   Grid.Row="2"
                   Style="{StaticResource ModernDataGridStyle}"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                    MouseDoubleClick="PlayersGrid_MouseDoubleClick">
 
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="📋 Copier ID"
-                              Click="CopyId_Click"/>
-                    <MenuItem Header="👢 Kick"
-                              Click="KickButton_Click"/>
-                    <MenuItem Header="🔨 Ban"
-                              Click="BanButton_Click"/>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nom"
@@ -117,6 +108,11 @@
                 <DataGridTextColumn Header="Niveau"
                                     Binding="{Binding Level}"
                                     Width="100"/>
+
+                <DataGridTextColumn Header="Note"
+                                    Binding="{Binding Note}"
+                                    Width="260"/>
+
             </DataGrid.Columns>
 
         </DataGrid>

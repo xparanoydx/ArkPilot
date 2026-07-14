@@ -93,8 +93,33 @@ Style="{StaticResource SidebarButtonStyle}"        Click="Dashboard_Click"/>
                     <Button Content="🖥 Serveur"
 Style="{StaticResource SidebarButtonStyle}"        Click="Server_Click"/>
 
-                    <Button Content="👥 Joueurs"
-Style="{StaticResource SidebarButtonStyle}"        Click="Players_Click"/>
+                    <Button x:Name="PlayersMenuButton"
+                            Content="🛡 Administration joueurs  ▶"
+                            Style="{StaticResource SidebarButtonStyle}"
+                            Click="TogglePlayersMenu_Click"/>
+
+                    <StackPanel x:Name="PlayersSubMenu"
+                                Visibility="Collapsed"
+                                Margin="20,0,0,0">
+
+                        <Button Content="👤 Joueurs"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="Players_Click"/>
+
+                        <Button Content="🚫 Joueurs bannis"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="BannedPlayers_Click"/>
+
+                        <Button Content="📜 Historique admin"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="AdminHistory_Click"/>
+
+
+                    </StackPanel>
+
+                    <Button Content="📢 Messages"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Click="Chat_Click"/>
 
                     <Button Content="💾 Sauvegardes"
 Style="{StaticResource SidebarButtonStyle}"        Click="Backups_Click"/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,8 @@ namespace ArkPilot.Services
 
         private readonly CancellationTokenSource _cts = new();
 
+        private readonly RconHistoryService _historyService = new();
+
         private Task? _workerTask;
 
         private bool _running;
@@ -28,6 +31,9 @@ namespace ArkPilot.Services
 
         public event Action<string, string>? OnResponse;
 
+        public ObservableCollection<RconHistoryEntry> History { get; }
+            = new();
+
 
 
         public bool IsConnected =>
@@ -38,6 +44,17 @@ namespace ArkPilot.Services
         public RconEngine(RconClient client)
         {
             _client = client;
+
+            foreach (var entry in _historyService.Load())
+            {
+                History.Add(entry);
+            }
+
+
+            while (History.Count > 300)
+            {
+                History.RemoveAt(0);
+            }
 
             _client.OnLog += msg =>
             {
@@ -121,6 +138,21 @@ namespace ArkPilot.Services
                     command,
                     result);
 
+                History.Add(
+                    new RconHistoryEntry
+                {
+                    Timestamp = DateTime.Now,
+                    Command = command,
+                    Response = result
+                });
+
+                while (History.Count > 300)
+                {
+                    History.RemoveAt(0);
+                }
+
+                _historyService.Save(
+                    History);
 
                 return result;
             }
@@ -204,6 +236,21 @@ namespace ArkPilot.Services
                         command,
                         result);
 
+                    History.Add(
+                        new RconHistoryEntry
+                    {
+                        Timestamp = DateTime.Now,
+                        Command = command,
+                        Response = result
+                    });
+
+                    while (History.Count > 300)
+                    {
+                        History.RemoveAt(0);
+                    }
+
+                    _historyService.Save(
+                        History);
 
                     // Ne pas afficher les commandes automatiques
                     // du ServerMonitor
@@ -222,6 +269,22 @@ namespace ArkPilot.Services
                     _commandLock.Release();
                 }
             }
+        }
+
+
+        // =========================
+        // CLEAR HISTORY
+        // =========================
+
+        public void ClearHistory()
+        {
+            History.Clear();
+
+            _historyService.Save(
+                History);
+
+            LogService.Info(
+                "Historique RCON effacé");
         }
 
         // =========================

@@ -12,6 +12,8 @@ namespace ArkPilot.Views
         private readonly ServerMonitor? monitor;
         private readonly RconEngine rcon;
 
+        private readonly PlayerNoteService noteService = new();
+
         public ObservableCollection<PlayerInfo> Players { get; } = new();
 
 
@@ -90,9 +92,17 @@ namespace ArkPilot.Views
 
             foreach (var player in monitor.Players)
             {
+                var note =
+                    noteService.GetNote(
+                        player.Id);
+
+
+                player.Note =
+                    note?.Note ?? "";
+
+
                 Players.Add(player);
             }
-
 
 
             PlayerCountText.Text =
@@ -158,58 +168,37 @@ namespace ArkPilot.Views
 
 
         // =========================
-        // KICK
+        // PLAYER DETAILS
         // =========================
 
-        private void KickButton_Click(
+        private void PlayersGrid_MouseDoubleClick(
             object sender,
-            RoutedEventArgs e)
+            System.Windows.Input.MouseButtonEventArgs e)
         {
             if (PlayersGrid.SelectedItem
                 is not PlayerInfo player)
                 return;
 
 
-            rcon.Send(
-                $"KickPlayer {player.Id}");
-        }
+            PlayerDetailsWindow window =
+                new PlayerDetailsWindow(
+                    player,
+                    rcon,
+                    noteService,
+                    ((MainWindow)Application.Current.MainWindow)
+                        .AdminHistory,
+                    ((MainWindow)Application.Current.MainWindow)
+                        .BannedPlayers)
+                {
+                    Owner =
+                        Application.Current.MainWindow
+                };
 
 
-
-        // =========================
-        // BAN
-        // =========================
-
-        private void BanButton_Click(
-            object sender,
-            RoutedEventArgs e)
-        {
-            if (PlayersGrid.SelectedItem
-                is not PlayerInfo player)
-                return;
+            window.ShowDialog();
 
 
-            rcon.Send(
-                $"BanPlayer {player.Id}");
-        }
-
-
-
-
-        // =========================
-        // COPY ID
-        // =========================
-
-        private void CopyId_Click(
-            object sender,
-            RoutedEventArgs e)
-        {
-            if (PlayersGrid.SelectedItem
-                is PlayerInfo player)
-            {
-                Clipboard.SetText(
-                    player.Id);
-            }
+            PlayersGrid.Items.Refresh();
         }
     }
 }

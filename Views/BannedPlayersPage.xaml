@@ -1,0 +1,98 @@
+﻿<Page x:Class="ArkPilot.Views.BannedPlayersPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="{StaticResource BrushBackground}">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <!-- HEADER -->
+        <StackPanel>
+
+            <TextBlock Text="Joueurs bannis"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="{StaticResource BrushTextPrimary}"/>
+
+            <TextBlock Text="Gestion des joueurs bannis depuis ArkPilot"
+                       FontSize="14"
+                       Foreground="{StaticResource BrushTextSecondary}"/>
+
+        </StackPanel>
+
+
+        <!-- TOOLBAR -->
+        <Border Grid.Row="1"
+                Background="{StaticResource BrushCard}"
+                BorderBrush="{StaticResource BrushBorder}"
+                BorderThickness="1"
+                CornerRadius="12"
+                Padding="16"
+                Margin="0,25,0,15">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <TextBox x:Name="SearchBox"
+                         Width="260"
+                         Height="38"
+                         ToolTip="Rechercher un joueur banni..."
+                         Background="{StaticResource BrushBackground}"
+                         Foreground="{StaticResource BrushTextPrimary}"
+                         BorderBrush="{StaticResource BrushBorder}"
+                         BorderThickness="1"
+                         TextChanged="SearchBox_TextChanged"/>
+
+
+                <TextBlock x:Name="BannedCountText"
+                           Grid.Column="1"
+                           Text="🚫 Joueurs bannis : 0"
+                           Foreground="{StaticResource BrushTextPrimary}"
+                           VerticalAlignment="Center"
+                           Margin="20,0,0,0"/>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- BANNED PLAYERS GRID -->
+        <DataGrid x:Name="BannedPlayersGrid"
+                  Grid.Row="2"
+                  Style="{StaticResource ModernDataGridStyle}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  MouseDoubleClick="BannedPlayersGrid_MouseDoubleClick">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Date du ban"
+                                    Binding="{Binding BannedAt, StringFormat=dd/MM/yyyy HH:mm:ss}"
+                                    Width="180"/>
+
+                <DataGridTextColumn Header="Joueur"
+                                    Binding="{Binding PlayerName}"
+                                    Width="*"/>
+
+                <DataGridTextColumn Header="EOS / Steam ID"
+                                    Binding="{Binding PlayerId}"
+                                    Width="320"/>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</Page>

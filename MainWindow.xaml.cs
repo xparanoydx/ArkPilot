@@ -19,6 +19,12 @@ namespace ArkPilot
         private readonly RconEngine rcon;
         private readonly AutomationService _automation;
 
+        private readonly AdminHistoryService adminHistory =
+            new();
+
+        private readonly BannedPlayerService bannedPlayers =
+            new();
+
         public RconEngine Rcon => rcon;
 
         public AutomationService Automation =>
@@ -33,10 +39,18 @@ namespace ArkPilot
         public BackupService BackupService =>
             backupService;
 
+        public AdminHistoryService AdminHistory =>
+            adminHistory;
+
+        public BannedPlayerService BannedPlayers =>
+            bannedPlayers;
+
 
         private NavigationService navigation;
 
         private bool logsExpanded;
+
+        private bool playersMenuExpanded;
 
         private ServerMonitor? monitor;
 
@@ -338,6 +352,15 @@ namespace ArkPilot
                 new ConsolePage(rcon));
         }
 
+        private void Chat_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            navigation.Navigate(
+                new ChatPage(
+                    rcon,
+                    adminHistory));
+        }
 
 
         private async void Dashboard_Click(
@@ -361,12 +384,60 @@ namespace ArkPilot
                 new DashboardPage(rcon));
         }
 
+        private void TogglePlayersMenu_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            playersMenuExpanded =
+                !playersMenuExpanded;
+
+
+            PlayersSubMenu.Visibility =
+                playersMenuExpanded
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+
+            PlayersMenuButton.Content =
+                playersMenuExpanded
+                    ? "🛡 Administration joueurs  ▼"
+                    : "🛡 Administration joueurs  ▶";
+        }
+
         private void Players_Click(
     object sender,
     RoutedEventArgs e)
         {
             navigation.Navigate(
                 new PlayersPage(rcon));
+        }
+
+        private void BannedPlayers_Click(
+    object sender,
+    RoutedEventArgs e)
+        {
+            navigation.Navigate(
+                new BannedPlayersPage(
+                    rcon,
+                    bannedPlayers,
+                    adminHistory));
+        }
+
+        private void Tribes_Click(
+    object sender,
+    RoutedEventArgs e)
+        {
+            navigation.Navigate(
+                new TribesPage(rcon));
+        }
+
+        private void AdminHistory_Click(
+    object sender,
+    RoutedEventArgs e)
+        {
+            navigation.Navigate(
+                new AdminHistoryPage(
+                    adminHistory));
         }
 
 

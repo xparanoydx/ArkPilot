@@ -10,11 +10,24 @@ namespace ArkPilot.Views
         private readonly RconEngine rcon;
 
 
+
         public ConsolePage(RconEngine engine)
         {
             InitializeComponent();
 
             rcon = engine;
+
+            foreach (var entry in rcon.History)
+            {
+                AddLog(
+                    $"[{entry.Timestamp:HH:mm:ss}] > {entry.Command}");
+
+                if (!string.IsNullOrWhiteSpace(entry.Response))
+                {
+                    AddLog(
+                        entry.Response);
+                }
+            }
 
 
             rcon.OnLog += Rcon_OnLog;
@@ -49,15 +62,8 @@ namespace ArkPilot.Views
         private void Rcon_OnResponse(
             string command,
             string response)
+
         {
-            if (command.Equals(
-                "ListPlayers",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-
             Dispatcher.Invoke(() =>
             {
                 AddLog(
@@ -120,9 +126,23 @@ namespace ArkPilot.Views
             object sender,
             RoutedEventArgs e)
         {
+            var result =
+                MessageBox.Show(
+                    "Voulez-vous vraiment effacer tout l'historique RCON ?",
+                    "Confirmation",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+
+            rcon.ClearHistory();
+
+
             ConsoleList.Items.Clear();
         }
-
 
 
         // =========================

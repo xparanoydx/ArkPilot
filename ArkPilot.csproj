@@ -15,7 +15,7 @@
 		<Title>ArkPilot</Title>
 		<Description>Modern Windows manager for ARK: Survival Ascended servers.</Description>
 		<Authors>Damien Dechaume</Authors>
-		<Version>12.8.0</Version>
+		<Version>12.9.0</Version>
 
 		<ApplicationIcon>Assets\Images\ArkPilot.ico</ApplicationIcon>
 	</PropertyGroup>
