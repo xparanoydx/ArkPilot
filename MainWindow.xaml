@@ -110,6 +110,14 @@ Style="{StaticResource SidebarButtonStyle}"        Click="Server_Click"/>
                                 Style="{StaticResource SidebarButtonStyle}"
                                 Click="BannedPlayers_Click"/>
 
+                        <Button Content="🏰 Tribus"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="Tribes_Click"/>
+
+                        <Button Content="🦖 Dinos"
+                                Style="{StaticResource SidebarButtonStyle}"
+                                Click="Dinos_Click"/>
+
                         <Button Content="📜 Historique admin"
                                 Style="{StaticResource SidebarButtonStyle}"
                                 Click="AdminHistory_Click"/>

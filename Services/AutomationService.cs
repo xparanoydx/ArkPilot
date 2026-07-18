@@ -799,6 +799,55 @@ namespace ArkPilot.Services
 
 
         // =========================
+        // WAIT FOR NITRADO STATUS
+        // =========================
+
+        private async Task<bool> WaitForNitradoStatusAsync(
+            string expectedStatus,
+            TimeSpan timeout,
+            CancellationToken token)
+        {
+            DateTime deadline =
+                DateTime.Now.Add(timeout);
+
+
+            while (DateTime.Now < deadline)
+            {
+                token.ThrowIfCancellationRequested();
+
+
+                NitradoServerInfo info =
+                    await _nitradoService.GetServerInfoAsync();
+
+
+                if (info.Status.Equals(
+                    expectedStatus,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+
+                OnLog?.Invoke(
+                    $"⏳ Automation : état Nitrado actuel - {info.Status}");
+
+
+                await Task.Delay(
+                    TimeSpan.FromSeconds(10),
+                    token);
+            }
+
+
+            OnLog?.Invoke(
+                $"❌ Automation : délai dépassé en attente de l'état {expectedStatus}");
+
+
+            return false;
+        }
+
+
+
+        // =========================
         // AUTO RESTART
         // =========================
 

@@ -25,6 +25,14 @@ namespace ArkPilot
         private readonly BannedPlayerService bannedPlayers =
             new();
 
+        private readonly FtpService ftpService;
+
+        private readonly NitradoService nitradoService;
+
+        private readonly ArkSaveDataService arkSaveDataService;
+
+        private TribesPage? tribesPage;
+
         public RconEngine Rcon => rcon;
 
         public AutomationService Automation =>
@@ -61,6 +69,23 @@ namespace ArkPilot
         {
             InitializeComponent();
 
+            var config = ConfigManager.Load();
+
+            ftpService =
+                new FtpService(
+                    config.FtpHost,
+                    config.FtpPort,
+                    config.FtpUser,
+                    config.FtpPassword);
+
+            nitradoService =
+                new NitradoService(config);
+
+            arkSaveDataService =
+                new ArkSaveDataService(
+                    ftpService,
+                    nitradoService);
+
             navigation = new NavigationService(MainContent);
 
 
@@ -73,11 +98,13 @@ namespace ArkPilot
             ark = new ArkService(rcon);
 
             backupService =
-                new BackupService(ark);
+                new BackupService(
+                    ark,
+                    arkSaveDataService);
 
             _automation = new AutomationService(
                 rcon,
-                ConfigManager.Load());
+                config);
 
             // =========================
             // LOG SYSTEM
@@ -405,16 +432,18 @@ namespace ArkPilot
         }
 
         private void Players_Click(
-    object sender,
-    RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
         {
             navigation.Navigate(
-                new PlayersPage(rcon));
-        }
+                new PlayersPage(
+                rcon,
+                arkSaveDataService));
+}
 
         private void BannedPlayers_Click(
-    object sender,
-    RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
         {
             navigation.Navigate(
                 new BannedPlayersPage(
@@ -424,12 +453,28 @@ namespace ArkPilot
         }
 
         private void Tribes_Click(
-    object sender,
-    RoutedEventArgs e)
+            object sender,
+            RoutedEventArgs e)
+        {
+            tribesPage ??=
+                new TribesPage(
+                    rcon,
+                    arkSaveDataService);
+
+            navigation.Navigate(
+                tribesPage);
+        }
+
+        private void Dinos_Click(
+            object sender,
+            RoutedEventArgs e)
         {
             navigation.Navigate(
-                new TribesPage(rcon));
-        }
+                new DinosPage(
+                rcon,
+                arkSaveDataService));
+                }
+
 
         private void AdminHistory_Click(
     object sender,

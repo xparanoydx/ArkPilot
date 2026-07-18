@@ -95,7 +95,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nom"
                                     Binding="{Binding Name}"
-                                    Width="*"/>
+                                    Width="180"/>
+
+                <DataGridTextColumn Header="Personnage"
+                                    Binding="{Binding CharacterName}"
+                                    Width="180" />
 
                 <DataGridTextColumn Header="EOS / Steam ID"
                                     Binding="{Binding Id}"

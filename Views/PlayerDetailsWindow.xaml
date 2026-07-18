@@ -171,6 +171,17 @@
                            Foreground="{StaticResource BrushTextPrimary}"
                            Margin="0,0,0,12"/>
 
+                <Grid Margin="0,0,0,16">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+
+                </Grid>
+
+
                 <WrapPanel>
 
                     <Button Content="👢 Kick"

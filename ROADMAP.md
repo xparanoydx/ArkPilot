@@ -8,6 +8,9 @@ Plans may change depending on technical constraints, user feedback and project p
 
 ## v12.7.0 — Automation
 
+- [x] Automatic server restart
+- [x] Automatic weekend events
+- [x] Manual world backup
 - [ ] Scheduled backups
 - [ ] Automatic backup rotation
 - [ ] Configurable retention rules
@@ -21,6 +24,7 @@ Plans may change depending on technical constraints, user feedback and project p
 
 - [ ] Player connection history
 - [ ] Server activity statistics
+- [ ] Server uptime statistics
 - [ ] Improved log viewer
 - [ ] Search and filters
 - [ ] Export logs
@@ -30,21 +34,69 @@ Plans may change depending on technical constraints, user feedback and project p
 
 ## v12.9.0 — Administration
 
-- [ ] Advanced player management
-- [ ] Tribe management
-- [ ] Kick and ban tools
-- [ ] Broadcast messages
-- [ ] Player notes
-- [ ] RCON command history
+- [x] Advanced player management
+- [x] Player details
+- [x] Kick and ban tools
+- [x] Broadcast messages
+- [x] Player notes
+- [x] Administration history
+
+---
+
+## v12.10.0 — Advanced Administration
+
+### Tribe Management
+- [x] Tribe list
+- [x] Tribe details
+- [x] Tribe member list
+- [x] Automatic synchronization
+- [ ] Tribe administration tools
+- [ ] Tribe notes
+- [ ] Tribe administration history
+
+### Player Management
+- [x] Display player level
+- [x] Display player tribe
+- [x] Display character name
+- [x] SaveData synchronization
+- [ ] Last login
+- [ ] GPS position
+- [ ] Offline player list
+- [ ] Player administration history
+
+### Event Management
+- [x] Automatic migration of WildDinoCharacterFoodDrainMultiplier
+- [x] Correct Game.ini management
+
+---
+
+## v12.11.0 — World Explorer
+
+### Creature Management
+
+- [ ] Tamed creature list
+- [ ] Wild creature list
+- [ ] Creature details
+- [ ] Creature ownership
+- [ ] Creature search
+- [ ] Creature teleport
+- [ ] Creature export
+
+### Structure Management
+
+- [ ] Structure list
+- [ ] Structure details
+- [ ] Structure ownership
+- [ ] Structure search
 
 ---
 
 ## v13.0.0 — Command Center
 
 - [ ] Multi-server management
+- [ ] Backup restoration
 - [ ] Mod manager
 - [ ] Mod update detection
-- [ ] Backup restoration
 - [ ] Discord integration
 - [ ] Automatic ArkPilot updates
 - [ ] Customizable dashboard

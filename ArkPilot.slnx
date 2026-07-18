@@ -1,4 +1,5 @@
 <Solution>
   <Folder Name="/Éléments de solution/" />
   <Project Path="ArkPilot.csproj" />
+  <Project Path="ThirdParty/AsaSavegameToolkit/AsaSavegameToolkit.csproj" />
 </Solution>

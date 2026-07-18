@@ -17,6 +17,72 @@
     <SolidColorBrush x:Key="BrushError" Color="#F44336"/>
     <SolidColorBrush x:Key="BrushInfo" Color="#42A5F5"/>
 
+
+    <!-- ========================= -->
+    <!-- Couleurs des icônes -->
+    <!-- ========================= -->
+
+    <SolidColorBrush x:Key="BrushMale"
+                 Color="#00B7FF"/>
+
+    <SolidColorBrush x:Key="BrushFemale"
+                 Color="#FF2EA6"/>
+
+    <SolidColorBrush x:Key="BrushCryo"
+                 Color="#5EDBFF"/>
+
+    <SolidColorBrush x:Key="BrushMutation"
+                 Color="#A855F7"/>
+
+    <SolidColorBrush x:Key="BrushGps"
+                 Color="#34D399"/>
+
+    <SolidColorBrush x:Key="BrushInventory"
+                 Color="#FBBF24"/>
+
+    <SolidColorBrush x:Key="BrushHealth"
+                 Color="#EF4444"/>
+
+    <SolidColorBrush x:Key="BrushStamina"
+                 Color="#FACC15"/>
+
+    <SolidColorBrush x:Key="BrushFood"
+                 Color="#FB923C"/>
+
+    <SolidColorBrush x:Key="BrushWater"
+                 Color="#38BDF8"/>
+
+
+    <!-- ========================= -->
+    <!-- Styles des fenêtres de détails -->
+    <!-- ========================= -->
+
+    <Style x:Key="DetailsLabelStyle"
+       TargetType="TextBlock">
+
+        <Setter Property="FontWeight"
+            Value="SemiBold"/>
+
+        <Setter Property="Foreground"
+            Value="{StaticResource BrushTextSecondary}"/>
+
+        <Setter Property="VerticalAlignment"
+            Value="Center"/>
+
+    </Style>
+
+    <Style x:Key="DetailsValueStyle"
+       TargetType="TextBlock">
+
+        <Setter Property="Foreground"
+            Value="{StaticResource BrushTextPrimary}"/>
+
+        <Setter Property="VerticalAlignment"
+            Value="Center"/>
+
+    </Style>
+
+
     <!-- ========================= -->
     <!-- GLOBAL BUTTON STYLE -->
     <!-- ========================= -->

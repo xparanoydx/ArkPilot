@@ -34,6 +34,44 @@
 
     </Style>
 
+    <Style x:Key="ModernDataGridRowStyle"
+       TargetType="DataGridRow">
+
+        <Setter Property="Background"
+            Value="{StaticResource BrushCard}"/>
+
+        <Setter Property="Foreground"
+            Value="{StaticResource BrushTextPrimary}"/>
+
+        <Setter Property="BorderThickness"
+            Value="0"/>
+
+        <Setter Property="SnapsToDevicePixels"
+            Value="True"/>
+
+        <Style.Triggers>
+
+            <!-- Survol -->
+            <Trigger Property="IsMouseOver"
+                 Value="True">
+                <Setter Property="Background"
+                    Value="#3B4A63"/>
+            </Trigger>
+
+            <!-- Ligne sélectionnée -->
+            <Trigger Property="IsSelected"
+                 Value="True">
+                <Setter Property="Background"
+                    Value="{StaticResource BrushAccent}"/>
+                <Setter Property="Foreground"
+                    Value="White"/>
+            </Trigger>
+
+        </Style.Triggers>
+
+    </Style>
+
+
     <Style x:Key="ModernDataGridStyle"
            TargetType="DataGrid">
 
@@ -84,6 +122,9 @@
 
         <Setter Property="RowBackground"
                 Value="{StaticResource BrushCard}"/>
+
+        <Setter Property="RowStyle"
+                Value="{StaticResource ModernDataGridRowStyle}"/>
 
         <Setter Property="HorizontalGridLinesBrush"
                 Value="{StaticResource BrushBorder}"/>

@@ -15,7 +15,7 @@
 		<Title>ArkPilot</Title>
 		<Description>Modern Windows manager for ARK: Survival Ascended servers.</Description>
 		<Authors>Damien Dechaume</Authors>
-		<Version>12.9.0</Version>
+		<Version>12.10.0</Version>
 
 		<ApplicationIcon>Assets\Images\ArkPilot.ico</ApplicationIcon>
 	</PropertyGroup>
@@ -23,13 +23,19 @@
 	<ItemGroup>
 		<PackageReference Include="CoreRCON" Version="5.4.2" />
 		<PackageReference Include="FluentFTP" Version="54.2.0" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="ThirdParty\" />
 		<Folder Include="Resources\" />
 		<Folder Include="ViewModels\" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="ThirdParty\AsaSavegameToolkit\AsaSavegameToolkit.csproj" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<Resource Include="Assets\Images\ArkPilotIcon.png">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -38,6 +44,10 @@
 		<Resource Include="Assets\Images\ArkPilotLogo.png">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="ThirdParty\AsaSavegameToolkit\**\*.cs" />
 	</ItemGroup>
 
 </Project>

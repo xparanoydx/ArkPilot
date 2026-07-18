@@ -1,10 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ArkPilot.Models
+﻿namespace ArkPilot.Models
 {
-    internal class DinoInfo
+    public class DinoInfo
     {
+        public string Name { get; set; } = "";
+
+        public string Species { get; set; } = "";
+
+        public int Level { get; set; }
+
+        public string Gender { get; set; } = "";
+
+        public string TribeName { get; set; } = "";
+
+        public string OwnerName { get; set; } = "";
+
+        public bool IsCryopodded { get; set; }
+
+        public string Location { get; set; } = "";
     }
 }

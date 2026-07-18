@@ -3,6 +3,7 @@
     public class PlayerInfo
     {
         public string Name { get; set; } = "";
+        public string CharacterName { get; set; } = "";
         public string Id { get; set; } = "";
         public string Tribe { get; set; } = "";
         public int Level { get; set; }

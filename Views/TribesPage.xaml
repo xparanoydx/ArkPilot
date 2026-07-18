@@ -71,7 +71,8 @@
         <DataGrid x:Name="TribesGrid"
                   Grid.Row="2"
                   Style="{StaticResource ModernDataGridStyle}"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  MouseDoubleClick="TribesGrid_MouseDoubleClick">
 
             <DataGrid.Columns>
 

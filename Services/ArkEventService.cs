@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ArkPilot.Models;
 using System.Globalization;
+using System.Linq;
 
 namespace ArkPilot.Services
 {
@@ -328,7 +329,7 @@ namespace ArkPilot.Services
 
                 WildDinoFoodDrainMultiplier =
                     GetIniDoubleValue(
-                        GameUserSettingsBackupPath,
+                        GameIniBackupPath,
                         "WildDinoCharacterFoodDrainMultiplier"),
 
                 HarvestMultiplier =
@@ -449,13 +450,12 @@ namespace ArkPilot.Services
                         CultureInfo.InvariantCulture));
 
 
-            success &=
-                SetIniValue(
-                    gameUserSettings,
-                    "WildDinoCharacterFoodDrainMultiplier",
-                    original.WildDinoFoodDrainMultiplier.ToString(
-                        CultureInfo.InvariantCulture));
-
+            SetOrAddIniValueInSection(
+                gameIni,
+                "[/Script/ShooterGame.ShooterGameMode]",
+                "WildDinoCharacterFoodDrainMultiplier",
+                original.WildDinoFoodDrainMultiplier.ToString(
+                    CultureInfo.InvariantCulture));
 
             success &=
                 SetIniValue(
@@ -534,15 +534,20 @@ namespace ArkPilot.Services
                             CultureInfo.InvariantCulture));
             }
 
+            success &=
+                RemoveIniKey(
+                    gameUserSettings,
+                    "WildDinoCharacterFoodDrainMultiplier");
+
 
             if (_config.WeekendWildDinoFoodDrainEnabled)
             {
-                success &=
-                    SetIniValue(
-                        gameUserSettings,
-                        "WildDinoCharacterFoodDrainMultiplier",
-                        _config.WeekendWildDinoFoodDrainMultiplier.ToString(
-                            CultureInfo.InvariantCulture));
+                SetOrAddIniValueInSection(
+                    gameIni,
+                    "[/Script/ShooterGame.ShooterGameMode]",
+                    "WildDinoCharacterFoodDrainMultiplier",
+                    _config.WeekendWildDinoFoodDrainMultiplier.ToString(
+                        CultureInfo.InvariantCulture));
             }
 
 
@@ -638,6 +643,220 @@ namespace ArkPilot.Services
             return true;
         }
 
+
+        // =========================
+        // SET INI VALUE IN SECTION
+        // =========================
+
+        private bool SetIniValueInSection(
+            string filePath,
+            string section,
+            string key,
+            string value)
+        {
+            string[] lines =
+                File.ReadAllLines(filePath);
+
+
+            bool sectionFound = false;
+            bool inTargetSection = false;
+
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line =
+                    lines[i].Trim();
+
+
+                if (line.Equals(
+                    section,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    sectionFound = true;
+                    inTargetSection = true;
+
+                    continue;
+                }
+
+
+                if (inTargetSection &&
+                    line.StartsWith("[") &&
+                    line.EndsWith("]"))
+                {
+                    break;
+                }
+
+
+                if (!inTargetSection)
+                {
+                    continue;
+                }
+
+
+                if (line.StartsWith(
+                    key + "=",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    lines[i] =
+                        $"{key}={value}";
+
+
+                    File.WriteAllLines(
+                        filePath,
+                        lines);
+
+
+                    return true;
+                }
+            }
+
+
+            if (!sectionFound)
+            {
+                OnLog?.Invoke(
+                    $"⚠ Event : section introuvable - {section}");
+
+                return false;
+            }
+
+
+            OnLog?.Invoke(
+                $"⚠ Event : paramètre introuvable - {section} -> {key}");
+
+            return false;
+        }
+
+
+        // =========================
+        // SET OR ADD INI VALUE
+        // =========================
+
+        private bool SetOrAddIniValueInSection(
+            string filePath,
+            string section,
+            string key,
+            string value)
+        {
+            string[] lines =
+                File.ReadAllLines(filePath);
+
+            bool inSection = false;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line =
+                    lines[i].Trim();
+
+                if (line.Equals(
+                    section,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    inSection = true;
+                    continue;
+                }
+
+                if (inSection &&
+                    line.StartsWith("[") &&
+                    line.EndsWith("]"))
+                {
+                    var list = lines.ToList();
+
+                    list.Insert(
+                        i,
+                        $"{key}={value}");
+
+                    File.WriteAllLines(
+                        filePath,
+                        list);
+
+                    OnLog?.Invoke(
+                        $"➕ Event : paramètre ajouté - {key}");
+
+                    return true;
+                }
+
+                if (!inSection)
+                {
+                    continue;
+                }
+
+                if (line.StartsWith(
+                    key + "=",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    lines[i] =
+                        $"{key}={value}";
+
+                    File.WriteAllLines(
+                        filePath,
+                        lines);
+
+                    return true;
+                }
+            }
+
+            if (inSection)
+            {
+                var list = lines.ToList();
+
+                list.Add(
+                    $"{key}={value}");
+
+                File.WriteAllLines(
+                    filePath,
+                    list);
+
+                OnLog?.Invoke(
+                    $"➕ Event : paramètre ajouté - {key}");
+
+                return true;
+            }
+
+            OnLog?.Invoke(
+                $"⚠ Event : section introuvable - {section}");
+
+            return false;
+        }
+
+
+        // =========================
+        // REMOVE INI KEY
+        // =========================
+
+        private bool RemoveIniKey(
+            string filePath,
+            string key)
+        {
+            string[] lines =
+                File.ReadAllLines(filePath);
+
+
+            var updatedLines =
+                lines
+                    .Where(line =>
+                        !line.Trim().StartsWith(
+                            key + "=",
+                            StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+
+
+            if (updatedLines.Length == lines.Length)
+            {
+                return true;
+            }
+
+
+            File.WriteAllLines(
+                filePath,
+                updatedLines);
+
+
+            OnLog?.Invoke(
+                $"🧹 Event : ancien paramètre supprimé - {key}");
+
+
+            return true;
+        }
 
         // =========================
         // UPLOAD FILE WITH RETRY

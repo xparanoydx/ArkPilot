@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.IO;
 
 namespace ArkPilot.Services
 {
@@ -43,6 +44,9 @@ namespace ArkPilot.Services
                     username,
                     password,
                     port);
+
+                client.Config.LogToConsole = true;
+                client.Config.LogHost = true;
 
                 await client.AutoConnect();
 
@@ -122,44 +126,88 @@ namespace ArkPilot.Services
                 .ToList();
         }
 
+
+
         public async Task<bool> DownloadFileAsync(
             string remotePath,
             string localPath,
-            IProgress<FluentFTP.FtpProgress>? progress = null)
+            IProgress<FtpProgress>? progress = null)
         {
             try
             {
+                await DisconnectAsync();
+
                 if (!await ConnectAsync())
                     return false;
 
-                var status =
-                    await client!.DownloadFile(
-                        localPath,
-                        remotePath,
-                        FtpLocalExists.Overwrite,
-                        FtpVerify.None,
-                        progress);
+                using var input =
+                    await client!.OpenRead(
+                        remotePath);
 
-                bool success =
-                    status == FtpStatus.Success;
+                string tempFile =
+                    localPath + ".download";
 
-                if (success)
-                    LogService.Success($"Téléchargement terminé : {localPath}");
-                else
-                    LogService.Warning($"Téléchargement incomplet : {remotePath}");
+                if (File.Exists(tempFile))
+                {
+                    File.Delete(tempFile);
+                }
 
-                return success;
+                using var output =
+                    File.Create(tempFile);
+
+                var buffer =
+                    new byte[81920];
+
+                long totalRead = 0;
+
+                int bytesRead;
+
+                while ((bytesRead =
+                    await input.ReadAsync(
+                        buffer,
+                        0,
+                        buffer.Length)) > 0)
+                {
+                    await output.WriteAsync(
+                        buffer,
+                        0,
+                        bytesRead);
+
+                    totalRead +=
+                        bytesRead;
+                }
+
+                await output.FlushAsync();
+
+                output.Close();
+
+                if (File.Exists(localPath))
+                {
+                    File.Delete(localPath);
+                }
+
+                File.Move(
+                    tempFile,
+                    localPath);
+
+
+                LogService.Success(
+                    $"Téléchargement terminé : {localPath}");
+
+                return true;
             }
             catch (Exception ex)
             {
-                LogService.Error($"Téléchargement FTP impossible : {ex.Message}");
+                LogService.Error(
+                    $"Téléchargement FTP impossible : {ex.Message}");
+
                 return false;
             }
         }
 
         public async Task<bool> UploadFileAsync(
-    string localPath,
-    string remotePath)
+            string localPath,
+            string remotePath)
         {
             try
             {

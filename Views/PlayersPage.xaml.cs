@@ -1,27 +1,39 @@
-﻿using ArkPilot.Services;
+﻿using ArkPilot.Models;
+using ArkPilot.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace ArkPilot.Views
 {
     public partial class PlayersPage : Page
     {
         private readonly ServerMonitor? monitor;
+
         private readonly RconEngine rcon;
 
+        private readonly ArkSaveDataService arkSaveDataService;
+
         private readonly PlayerNoteService noteService = new();
+
+        private List<PlayerSaveInfo> savedPlayers =
+            new();
 
         public ObservableCollection<PlayerInfo> Players { get; } = new();
 
 
-        public PlayersPage(RconEngine engine)
+        public PlayersPage(
+            RconEngine engine,
+            ArkSaveDataService saveDataService)
         {
             InitializeComponent();
 
             rcon = engine;
+
+            arkSaveDataService = saveDataService;
 
             monitor =
                 ((MainWindow)Application.Current.MainWindow)
@@ -37,11 +49,8 @@ namespace ArkPilot.Views
                     Monitor_Updated;
             }
 
-            Loaded += (_, __) =>
-            {
-                UpdatePlayers();
-            };
-
+            Loaded +=
+                PlayersPage_Loaded;
 
             Unloaded += (_, __) =>
             {
@@ -51,6 +60,28 @@ namespace ArkPilot.Views
                         Monitor_Updated;
                 }
             };
+        }
+
+
+        private async void PlayersPage_Loaded(
+            object sender,
+            RoutedEventArgs e)
+        {
+            var result =
+                await arkSaveDataService.LoadPlayersAsync();
+
+            if (result.Success)
+            {
+                savedPlayers =
+                    result.Players;
+            }
+            else
+            {
+                LogService.Warning(
+                    $"JOUEURS | {result.Error}");
+            }
+
+            UpdatePlayers();
         }
 
 
@@ -101,9 +132,36 @@ namespace ArkPilot.Views
                     note?.Note ?? "";
 
 
+                string normalizedRconId =
+                    player.Id
+                        .Replace("-", "")
+                        .Trim()
+                        .ToUpperInvariant();
+
+
+                var savedPlayer =
+                    savedPlayers.FirstOrDefault(saved =>
+                        !string.IsNullOrWhiteSpace(saved.UniqueNetId) &&
+                        saved.UniqueNetId
+                            .Replace("-", "")
+                            .Trim()
+                            .ToUpperInvariant() == normalizedRconId);
+
+
+                if (savedPlayer != null)
+                {
+                    player.CharacterName =
+                        savedPlayer.CharacterName;
+
+                    player.Tribe =
+                        savedPlayer.TribeName;
+
+                    player.Level =
+                        savedPlayer.Level;
+                }
+
                 Players.Add(player);
             }
-
 
             PlayerCountText.Text =
                 $"👥 Joueurs connectés : {monitor.PlayerCount}";
