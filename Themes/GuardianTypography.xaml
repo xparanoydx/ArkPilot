@@ -1,0 +1,47 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ========================================================= -->
+    <!-- Guardian Design System                                    -->
+    <!-- Typographie officielle                                    -->
+    <!-- ========================================================= -->
+
+    <FontFamily x:Key="GuardianTypography.FontFamily">
+        Segoe UI
+    </FontFamily>
+
+    <system:Double x:Key="GuardianTypography.Size.Caption">
+        11
+    </system:Double>
+
+    <system:Double x:Key="GuardianTypography.Size.Body">
+        13
+    </system:Double>
+
+    <system:Double x:Key="GuardianTypography.Size.Label">
+        14
+    </system:Double>
+
+    <system:Double x:Key="GuardianTypography.Size.Title">
+        16
+    </system:Double>
+
+    <system:Double x:Key="GuardianTypography.Size.Heading">
+        20
+    </system:Double>
+
+    <FontWeight x:Key="GuardianTypography.Weight.Regular">
+        Regular
+    </FontWeight>
+
+    <FontWeight x:Key="GuardianTypography.Weight.SemiBold">
+        SemiBold
+    </FontWeight>
+
+    <FontWeight x:Key="GuardianTypography.Weight.Bold">
+        Bold
+    </FontWeight>
+
+</ResourceDictionary>

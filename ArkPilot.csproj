@@ -27,12 +27,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Assets\Icons\Categories\" />
+		<Folder Include="Assets\Icons\Eggs\" />
+		<Folder Include="Assets\Icons\UI\" />
+		<Folder Include="Assets\Icons\Resources\" />
+		<Folder Include="Assets\Icons\Structures\" />
+		<Folder Include="Themes\Primitives\" />
 		<Folder Include="ThirdParty\" />
-		<Folder Include="Resources\" />
 		<Folder Include="ViewModels\" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Guardian.Controls\Guardian.UI.csproj" />
 		<ProjectReference Include="ThirdParty\AsaSavegameToolkit\AsaSavegameToolkit.csproj" />
 	</ItemGroup>
 	
@@ -48,6 +54,36 @@
 
 	<ItemGroup>
 		<Compile Remove="ThirdParty\AsaSavegameToolkit\**\*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Assets\Icons\Badges\Tek.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Assets\Icons\Creatures\Raptor.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Assets\Icons\Creatures\Unknown.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Controls\GuardianAccent.cs">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
+	  <Compile Update="Controls\GuardianAccentType.cs">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
+	  <Compile Update="Controls\GuardianCorner.cs">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
+	  <Compile Update="Controls\GuardianFrame.cs">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
+	  <Compile Update="Controls\GuardianWindow.cs">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

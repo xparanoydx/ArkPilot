@@ -589,6 +589,36 @@ namespace ArkPilot
         }
 
 
+        // =========================
+        // BOUTON TEMPORAIRE
+        // =========================
+
+
+        private void GuardianShowroom_Click(
+    object sender,
+    RoutedEventArgs e)
+        {
+            var window =
+                new GuardianShowroomWindow();
+
+            window.Owner = this;
+
+            window.Show();
+        }
+
+        private void GuardianDashboard_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            var window =
+                new GuardianDashboardMockup();
+
+            window.Owner = this;
+
+            window.Show();
+        }
+
+
 
         // =========================
         // CLOSE

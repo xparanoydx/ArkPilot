@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="ArkPilot.Controls.GuardianSidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border
+        Background="{StaticResource BrushSurface1}"
+        BorderBrush="{StaticResource BrushBorder}"
+        BorderThickness="1"
+        CornerRadius="{StaticResource RadiusLarge}"
+        Padding="14">
+
+        <StackPanel>
+
+            <TextBlock
+                Margin="6,8,6,18"
+                Style="{StaticResource GuardianTitleTextStyle}"
+                Text="ARKPILOT"/>
+
+            <Button
+                Style="{StaticResource GuardianNavigationButtonStyle}"
+                Content="🏠  Dashboard"/>
+
+            <Button
+                Style="{StaticResource GuardianNavigationButtonStyle}"
+                Content="👥  Administration"/>
+
+            <Button
+                Style="{StaticResource GuardianNavigationButtonStyle}"
+                Content="🏰  Tribus"/>
+
+            <Button
+                Style="{StaticResource GuardianNavigationButtonStyle}"
+                Content="🦖  Dinos"/>
+
+            <Button
+                Style="{StaticResource GuardianNavigationButtonStyle}"
+                Content="💬  Chat"/>
+
+        </StackPanel>
+
+    </Border>
+
+</UserControl>

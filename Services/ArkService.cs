@@ -16,12 +16,18 @@ namespace ArkPilot.Services
         // =========================
         // PLAYERS (V9 SAFE MODE)
         // =========================
-        public Task<List<PlayerInfo>> GetPlayersAsync()
+        public async Task<List<PlayerInfo>> GetPlayersAsync()
         {
-            _rcon.Send("ListPlayers");
+            LogService.Info("GetPlayersAsync appelée");
 
-            // V9: pas de retour direct possible
-            return Task.FromResult(new List<PlayerInfo>());
+            string response =
+                await _rcon.SendAndWaitAsync(
+                    "ListPlayers");
+
+            LogService.Info(
+                $"Réponse ListPlayers : {response}");
+
+            return new List<PlayerInfo>();
         }
 
         public void KickPlayer(string playerId)

@@ -1,0 +1,53 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:Double x:Key="GuardianCorner.Size">32</sys:Double>
+    
+    <!-- Primitive : ligne horizontale Guardian -->
+
+    <Style x:Key="GuardianPrimitive.HorizontalLine"
+       TargetType="Rectangle">
+
+        <Setter Property="Width"
+            Value="24"/>
+
+        <Setter Property="Height"
+            Value="2"/>
+
+        <Setter Property="RadiusX"
+            Value="1"/>
+
+        <Setter Property="RadiusY"
+            Value="1"/>
+
+        <Setter Property="Fill"
+            Value="{DynamicResource GuardianBrush.Accent}"/>
+
+    </Style>
+
+    <!-- Primitive : ligne verticale Guardian -->
+
+    <Style x:Key="GuardianPrimitive.VerticalLine"
+       TargetType="Rectangle">
+
+        <Setter Property="Width"
+            Value="2"/>
+
+        <Setter Property="Height"
+            Value="28"/>
+
+        <Setter Property="RadiusX"
+            Value="1"/>
+
+        <Setter Property="RadiusY"
+            Value="1"/>
+
+        <Setter Property="Fill"
+            Value="{DynamicResource GuardianBrush.Accent}"/>
+
+    </Style>
+
+
+</ResourceDictionary>

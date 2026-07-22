@@ -1,5 +1,6 @@
-﻿using System.Windows;
-using ArkPilot.Services;
+﻿using ArkPilot.Services;
+using ArkPilot.Views;
+using System.Windows;
 
 namespace ArkPilot
 {
@@ -9,6 +10,7 @@ namespace ArkPilot
         {
             ProcessCleaner.KillGhostProcesses();
             base.OnStartup(e);
+
         }
     }
 }

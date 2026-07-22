@@ -111,6 +111,54 @@ namespace ArkPilot.Services
         }
 
 
+        public async Task<string> SendAndWaitAsync(
+    string command,
+    int timeoutSeconds = 10)
+        {
+            if (!IsConnected)
+            {
+                return "RCON_OFFLINE";
+            }
+
+            var completion =
+                new TaskCompletionSource<string>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+
+            void ResponseHandler(
+                string responseCommand,
+                string response)
+            {
+                if (!string.Equals(
+                        responseCommand,
+                        command,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                completion.TrySetResult(response);
+            }
+
+            OnResponse += ResponseHandler;
+
+            try
+            {
+                Send(command);
+
+                return await completion.Task.WaitAsync(
+                    TimeSpan.FromSeconds(timeoutSeconds));
+            }
+            catch (TimeoutException)
+            {
+                return "TIMEOUT";
+            }
+            finally
+            {
+                OnResponse -= ResponseHandler;
+            }
+        }
+
+
 
         // =========================
         // DIRECT COMMAND

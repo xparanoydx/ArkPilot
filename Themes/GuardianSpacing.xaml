@@ -1,0 +1,17 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ========================================================= -->
+    <!-- Guardian Design System                                    -->
+    <!-- Espacements officiels                                     -->
+    <!-- ========================================================= -->
+
+    <Thickness x:Key="GuardianSpacing.XS">4</Thickness>
+    <Thickness x:Key="GuardianSpacing.S">8</Thickness>
+    <Thickness x:Key="GuardianSpacing.M">12</Thickness>
+    <Thickness x:Key="GuardianSpacing.L">16</Thickness>
+    <Thickness x:Key="GuardianSpacing.XL">24</Thickness>
+    <Thickness x:Key="GuardianSpacing.XXL">32</Thickness>
+
+</ResourceDictionary>

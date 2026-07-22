@@ -1,4 +1,9 @@
-﻿namespace ArkPilot.Models
+﻿using ArkPilot.Data;
+using ArkPilot.Helpers;
+using ArkPilot.Services;
+using System.IO;
+
+namespace ArkPilot.Models
 {
     public class DinoSaveInfo
     {
@@ -12,9 +17,55 @@
 
         public string ClassName { get; set; } = "";
 
+        public string IconPath =>
+            CreatureIconService.GetIconPathFromClassName(ClassName);
+
+        public string? BadgePath
+        {
+            get
+            {
+                var creature =
+                    CreatureDatabase.GetByClassName(ClassName);
+
+                if (creature == null)
+                    return null;
+
+                return BadgeIconService.GetBadgePath(
+                    creature.IsTek,
+                    creature.IsAberrant,
+                    creature.IsXCreature,
+                    creature.IsRCreature,
+                    creature.IsBoss,
+                    creature.IsFantasy);
+            }
+        }
+
+        public string CategoryDisplay
+        {
+            get
+            {
+                var creature =
+                    CreatureDatabase.GetByClassName(ClassName);
+
+                if (creature == null)
+                    return "Inconnu";
+
+                return creature.Category switch
+                {
+                    CreatureCategory.Carnivore => "🥩 Carnivore",
+                    CreatureCategory.Herbivore => "🌿 Herbivore",
+                    CreatureCategory.Flyer => "🪽 Volant",
+                    CreatureCategory.Aquatic => "🌊 Aquatique",
+                    CreatureCategory.Structure => "🏗 Structure",
+                    _ => creature.Category.ToString()
+                };
+            }
+        }
+
         public long DinoId { get; set; }
 
         public string Gender { get; set; } = "";
+
 
         // =========================
         // Niveaux

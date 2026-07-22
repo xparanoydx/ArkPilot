@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Éléments de solution/" />
+  <Project Path="../Guardian.Controls/Guardian.UI.csproj" Id="fa74eaf6-91a8-42e4-bce6-ed2792ff469f" />
   <Project Path="ArkPilot.csproj" />
   <Project Path="ThirdParty/AsaSavegameToolkit/AsaSavegameToolkit.csproj" />
 </Solution>

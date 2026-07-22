@@ -1,4 +1,6 @@
 ﻿using ArkPilot.Helpers;
+using System;
+using System.Collections.Generic;
 
 namespace ArkPilot.Models
 {
@@ -6,9 +8,13 @@ namespace ArkPilot.Models
     {
         public string Species { get; init; } = "";
 
+        public string ArkClass { get; set; } = "";
+
         public string DisplayName { get; init; } = "";
 
-        public string Icon { get; init; } = "";
+        public IReadOnlyList<string> Aliases { get; init; }
+            = Array.Empty<string>();
+
 
         public CreatureCategory Category { get; init; } =
             CreatureCategory.Unknown;

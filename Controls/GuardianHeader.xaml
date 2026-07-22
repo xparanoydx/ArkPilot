@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="ArkPilot.Controls.GuardianHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border
+        Background="{StaticResource BrushSurface1}"
+        BorderBrush="{StaticResource BrushBorder}"
+        BorderThickness="1"
+        CornerRadius="{StaticResource RadiusLarge}"
+        Padding="{StaticResource SpacingLarge}">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+
+                <TextBlock
+                    Style="{StaticResource GuardianTitleTextStyle}"
+                    Text="Dashboard"/>
+
+                <TextBlock
+    Margin="0,4,0,0"
+    FontSize="{StaticResource FontSizeBody}"
+    Foreground="{StaticResource BrushTextSecondary}"
+    Text="ParaLaure • Dernière actualisation : maintenant"/>
+                
+            </StackPanel>
+
+            <Border
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Background="{StaticResource BrushSuccess}"
+                CornerRadius="{StaticResource RadiusMedium}"
+                Padding="12,6">
+
+                <TextBlock
+                    FontWeight="{StaticResource FontWeightSemiBold}"
+                    Foreground="{StaticResource BrushTextPrimary}"
+                    Text="● EN LIGNE"/>
+
+            </Border>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

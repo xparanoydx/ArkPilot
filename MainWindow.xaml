@@ -147,6 +147,15 @@ Style="{StaticResource SidebarButtonStyle}"        Click="Settings_Click"/>
         Style="{StaticResource SidebarButtonStyle}"
         Click="FtpExplorer_Click"/>
 
+                    <Button Content="🧪 Guardian Showroom"
+        Style="{StaticResource SidebarButtonStyle}"
+        Click="GuardianShowroom_Click"/>
+
+                    <Button Content="🧩 Guardian Dashboard"
+        Style="{StaticResource SidebarButtonStyle}"
+        Click="GuardianDashboard_Click"/>
+
+
                     <Button Content="ℹ À propos"
         Style="{StaticResource SidebarButtonStyle}"
         Click="About_Click"/>

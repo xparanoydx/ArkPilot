@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="ArkPilot.Controls.GuardianCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root">
+
+    <Border
+        Background="{StaticResource BrushSurface1}"
+        BorderBrush="{StaticResource BrushBorder}"
+        BorderThickness="1"
+        CornerRadius="{StaticResource RadiusLarge}"
+        Padding="{StaticResource SpacingLarge}">
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Style="{StaticResource GuardianTitleTextStyle}"
+                Text="{Binding Title, ElementName=Root}"/>
+
+            <ContentPresenter
+                Grid.Row="2"
+                Content="{Binding CardContent, ElementName=Root}"/>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

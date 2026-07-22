@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- =========================
+     Text styles
+     ========================= -->
+
+    <Style x:Key="GuardianCaptionTextStyle"
+		   TargetType="TextBlock">
+        <Setter Property="FontSize"
+				Value="{StaticResource FontSizeCaption}"/>
+        <Setter Property="FontWeight"
+				Value="{StaticResource FontWeightRegular}"/>
+        <Setter Property="Foreground"
+				Value="{StaticResource BrushTextSecondary}"/>
+    </Style>
+
+    <Style x:Key="GuardianBodyTextStyle"
+		   TargetType="TextBlock">
+        <Setter Property="FontSize"
+				Value="{StaticResource FontSizeBody}"/>
+        <Setter Property="FontWeight"
+				Value="{StaticResource FontWeightRegular}"/>
+        <Setter Property="Foreground"
+				Value="{StaticResource BrushTextPrimary}"/>
+    </Style>
+
+    <Style x:Key="GuardianTitleTextStyle"
+		   TargetType="TextBlock">
+        <Setter Property="FontSize"
+				Value="{StaticResource FontSizeTitle}"/>
+        <Setter Property="FontWeight"
+				Value="{StaticResource FontWeightSemiBold}"/>
+        <Setter Property="Foreground"
+				Value="{StaticResource BrushTextPrimary}"/>
+    </Style>
+
+    <Style x:Key="GuardianHeroTextStyle"
+		   TargetType="TextBlock">
+        <Setter Property="FontSize"
+				Value="{StaticResource FontSizeHero}"/>
+        <Setter Property="FontWeight"
+				Value="{StaticResource FontWeightBold}"/>
+        <Setter Property="Foreground"
+				Value="{StaticResource BrushTextPrimary}"/>
+    </Style>
+
+
+</ResourceDictionary>

@@ -1,0 +1,33 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Fond général -->
+    <SolidColorBrush x:Key="GuardianBrush.Background"
+                     Color="#070C14"/>
+
+    <!-- Surface principale -->
+    <SolidColorBrush x:Key="GuardianBrush.Surface"
+                     Color="#101A26"/>
+
+    <!-- Cartes -->
+    <SolidColorBrush x:Key="GuardianBrush.Card"
+                     Color="#162433"/>
+
+    <!-- Bordure -->
+    <SolidColorBrush x:Key="GuardianBrush.Border"
+                     Color="#284A63"/>
+
+    <!-- Cyan -->
+    <SolidColorBrush x:Key="GuardianBrush.Accent"
+                     Color="#22D6FF"/>
+
+    <!-- Texte -->
+    <SolidColorBrush x:Key="GuardianBrush.Text"
+                     Color="#EAF8FF"/>
+
+    <!-- Texte secondaire -->
+    <SolidColorBrush x:Key="GuardianBrush.TextSecondary"
+                     Color="#8CA8BC"/>
+
+</ResourceDictionary>

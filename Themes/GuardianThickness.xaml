@@ -1,0 +1,16 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ========================================================= -->
+    <!-- Guardian Design System                                    -->
+    <!-- Épaisseurs officielles                                    -->
+    <!-- ========================================================= -->
+
+    <Thickness x:Key="GuardianThickness.None">0</Thickness>
+    <Thickness x:Key="GuardianThickness.Hairline">1</Thickness>
+    <Thickness x:Key="GuardianThickness.Thin">2</Thickness>
+    <Thickness x:Key="GuardianThickness.Medium">3</Thickness>
+    <Thickness x:Key="GuardianThickness.Strong">4</Thickness>
+
+</ResourceDictionary>

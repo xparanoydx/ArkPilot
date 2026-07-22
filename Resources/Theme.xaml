@@ -6,6 +6,7 @@
     <SolidColorBrush x:Key="BrushCard" Color="#2A2A3D"/>
     <SolidColorBrush x:Key="BrushCardHover" Color="#35354A"/>
     <SolidColorBrush x:Key="BrushBorder" Color="#40405A"/>
+    <SolidColorBrush x:Key="BrushBorderStrong" Color="#5B5B7A"/>
 
     <!-- Text -->
     <SolidColorBrush x:Key="BrushTextPrimary" Color="White"/>
@@ -170,5 +171,18 @@
         </Setter>
 
     </Style>
+
+    <!-- ========================= -->
+    <!-- Guardian Surfaces -->
+    <!-- ========================= -->
+
+    <SolidColorBrush x:Key="BrushSurface0"
+                 Color="#1E1E2E"/>
+
+    <SolidColorBrush x:Key="BrushSurface1"
+                 Color="#2A2A3D"/>
+
+    <SolidColorBrush x:Key="BrushSurface2"
+                 Color="#34344A"/>
 
 </ResourceDictionary>

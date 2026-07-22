@@ -4,16 +4,47 @@
              StartupUri="MainWindow.xaml">
 
     <Application.Resources>
+
         <ResourceDictionary>
+
             <ResourceDictionary.MergedDictionaries>
 
+                <!-- Thèmes existants -->
                 <ResourceDictionary Source="Resources/Theme.xaml"/>
+                <ResourceDictionary Source="Resources/Guardian.xaml"/>
+
+                <!-- Brushes Guardian -->
+                <ResourceDictionary Source="Resources/Brushes.xaml"/>
+
+                <!-- Foundation Guardian -->
+                <ResourceDictionary Source="Themes/GuardianSpacing.xaml"/>
+                <ResourceDictionary Source="Themes/GuardianRadius.xaml"/>
+                <ResourceDictionary Source="Themes/GuardianThickness.xaml"/>
+                <ResourceDictionary Source="Themes/GuardianTypography.xaml"/>
+
+                <!-- Primitives Guardian -->
+                <ResourceDictionary Source="Themes/GuardianPrimitives.xaml"/>
+
+                <!-- Contrôles Guardian -->
+                <ResourceDictionary Source="Themes/GuardianFrame.xaml"/>
+                <ResourceDictionary Source="Themes/GuardianCorner.xaml"/>
+                <ResourceDictionary Source="Themes/GuardianAccent.xaml"/>
+
+                <!-- Styles existants -->
+                <ResourceDictionary Source="Resources/Guardian.Controls.xaml"/>
+                <ResourceDictionary Source="Resources/Effects.xaml"/>
+                <ResourceDictionary Source="Resources/Shapes.xaml"/>
+                <ResourceDictionary Source="Resources/Text.xaml"/>
+                <ResourceDictionary Source="Resources/Badges.xaml"/>
+                <ResourceDictionary Source="Resources/Navigation.xaml"/>
                 <ResourceDictionary Source="Resources/Buttons.xaml"/>
                 <ResourceDictionary Source="Resources/DataGrid.xaml"/>
                 <ResourceDictionary Source="Resources/Controls.xaml"/>
 
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
+
     </Application.Resources>
 
 </Application>

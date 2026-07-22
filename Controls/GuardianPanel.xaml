@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="ArkPilot.Controls.GuardianPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border
+    Background="{StaticResource BrushSurface1}"
+    BorderBrush="{StaticResource BrushBorder}"
+    BorderThickness="1"
+    CornerRadius="{StaticResource RadiusLarge}"
+    Padding="{StaticResource SpacingLarge}"
+    Effect="{StaticResource GuardianShadowSmall}">
+
+        <ContentPresenter/>
+
+    </Border>
+    
+</UserControl>

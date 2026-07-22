@@ -1,4 +1,6 @@
-﻿namespace ArkPilot.Models
+﻿using ArkPilot.Data;
+
+namespace ArkPilot.Models
 {
     public class DinoInfo
     {

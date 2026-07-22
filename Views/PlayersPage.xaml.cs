@@ -74,6 +74,7 @@ namespace ArkPilot.Views
             {
                 savedPlayers =
                     result.Players;
+
             }
             else
             {

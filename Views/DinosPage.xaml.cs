@@ -1,4 +1,5 @@
-﻿using ArkPilot.Models;
+﻿using ArkPilot.Helpers;
+using ArkPilot.Models;
 using ArkPilot.Services;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System;
 
 namespace ArkPilot.Views
 {
@@ -28,6 +30,11 @@ namespace ArkPilot.Views
         {
             InitializeComponent();
 
+            CreatureFilterBox.ItemsSource =
+    ArkSpeciesHelper.GetFilterOptions();
+
+            CreatureFilterBox.SelectedIndex = 0;
+
             rcon = engine;
 
             arkSaveDataService = saveDataService;
@@ -38,43 +45,148 @@ namespace ArkPilot.Views
                 DinosPage_Loaded;
         }
 
+        private void CreatureFilterBox_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            ApplyFilters();
+        }
 
         private void SearchBox_TextChanged(
             object sender,
             TextChangedEventArgs e)
         {
-            string search = SearchBox.Text.Trim();
+            ApplyFilters();
+        }
 
-            Dinos.Clear();
+        private void ApplyFilters()
+        {
+            if (SearchBox == null ||
+                CreatureFilterBox == null ||
+                DinosGrid == null)
+            {
+                return;
+            }
+
+            string search = SearchBox.Text.Trim();
 
             IEnumerable<DinoSaveInfo> filteredDinos = allDinos;
 
+            if (CreatureFilterBox.SelectedItem
+                is CreatureFilterOption selectedOption &&
+                selectedOption.Filter != CreatureFilter.All)
+            {
+                filteredDinos = filteredDinos.Where(dino =>
+                {
+                    CreatureInfo? creatureInfo =
+                        ArkSpeciesHelper.GetCreatureInfo(dino.Species)
+                        ?? ArkSpeciesHelper.GetCreatureInfo(dino.Name);
+
+                    if (creatureInfo == null)
+                    {
+                        LogService.Warning(
+                            $"DINO FILTER | Espèce non reconnue : {dino.Species}");
+
+                        return false;
+                    }
+
+                    return selectedOption.Filter switch
+                    {
+                        CreatureFilter.Herbivores =>
+                            creatureInfo.Category ==
+                            CreatureCategory.Herbivore,
+
+                        CreatureFilter.Carnivores =>
+                            creatureInfo.Category ==
+                            CreatureCategory.Carnivore,
+
+                        CreatureFilter.Omnivores =>
+                            creatureInfo.Category ==
+                            CreatureCategory.Omnivore,
+
+                        CreatureFilter.Flyers =>
+                            creatureInfo.IsFlyer,
+
+                        CreatureFilter.Aquatics =>
+                            creatureInfo.IsAquatic,
+
+                        CreatureFilter.Insects =>
+                            creatureInfo.Category ==
+                            CreatureCategory.Insect,
+
+                        CreatureFilter.Fantasy =>
+                            creatureInfo.IsFantasy,
+
+                        CreatureFilter.Tek =>
+                            creatureInfo.IsTek,
+
+                        CreatureFilter.Bosses =>
+                            creatureInfo.IsBoss,
+
+                        CreatureFilter.Structure =>
+                            creatureInfo.Category ==
+                            CreatureCategory.Structure,
+
+                        _ => true
+                    };
+                });
+            }
+
             if (!string.IsNullOrWhiteSpace(search))
             {
-                filteredDinos = allDinos.Where(dino =>
-                    dino.Species.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase) ||
+                filteredDinos = filteredDinos.Where(dino =>
+                {
+                    CreatureInfo? creatureInfo =
+                        ArkSpeciesHelper.GetCreatureInfo(dino.Species);
 
-                    dino.Name.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase) ||
+                    bool matchesCreatureInfo =
+                        creatureInfo != null &&
+                        (
+                            creatureInfo.Species.Contains(
+                                search,
+                                StringComparison.OrdinalIgnoreCase) ||
 
-                    dino.TribeName.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase) ||
+                            creatureInfo.DisplayName.Contains(
+                                search,
+                                StringComparison.OrdinalIgnoreCase) ||
 
-                    dino.OwnerName.Contains(
-                        search,
-                        StringComparison.OrdinalIgnoreCase));
+                            creatureInfo.Aliases.Any(alias =>
+                                alias.Contains(
+                                    search,
+                                    StringComparison.OrdinalIgnoreCase))
+                        );
+
+                    return
+                        dino.Species.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        dino.Name.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        dino.TribeName.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        dino.OwnerName.Contains(
+                            search,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        matchesCreatureInfo;
+                });
             }
+
+
+            Dinos.Clear();
 
             foreach (var dino in filteredDinos)
             {
-                Dinos.Add(dino);
 
-                UpdateCount();
+                Dinos.Add(dino);
             }
+
+            UpdateCount();
         }
 
 
@@ -124,14 +236,8 @@ namespace ArkPilot.Views
 
             allDinos = result.Dinos;
 
-            Dinos.Clear();
+            ApplyFilters();
 
-            foreach (var dino in allDinos)
-            {
-                Dinos.Add(dino);
-
-                UpdateCount();
-            }
         }
     }
 }

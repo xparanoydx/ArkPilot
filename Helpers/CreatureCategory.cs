@@ -18,6 +18,8 @@
 
         Fantasy,
 
+        Structure,
+
         Boss
     }
 }

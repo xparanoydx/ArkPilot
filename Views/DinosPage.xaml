@@ -32,41 +32,58 @@
 
         <Grid Grid.Row="0">
 
-            <TextBox x:Name="SearchBox"
-             Style="{StaticResource SearchTextBoxStyle}"
-             TextChanged="SearchBox_TextChanged"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="210"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Text="🔍 Rechercher une espèce, un nom, une tribu ou un propriétaire..."
-               Margin="10,0,0,10"
-               VerticalAlignment="Center"
-               Foreground="{StaticResource BrushTextSecondary}"
-               IsHitTestVisible="False">
+            <Grid Grid.Column="0">
 
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
+                <TextBox x:Name="SearchBox"
+                 Style="{StaticResource SearchTextBoxStyle}"
+                 TextChanged="SearchBox_TextChanged"/>
 
-                        <Setter Property="Visibility"
-                        Value="Collapsed"/>
+                <TextBlock Text="🔍 Rechercher une espèce, un nom, une tribu ou un propriétaire..."
+                   Margin="10,0,0,10"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource BrushTextSecondary}"
+                   IsHitTestVisible="False">
 
-                        <Style.Triggers>
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
 
-                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}"
-                                 Value="">
+                            <Setter Property="Visibility"
+                            Value="Collapsed"/>
 
-                                <Setter Property="Visibility"
-                                Value="Visible"/>
+                            <Style.Triggers>
 
-                            </DataTrigger>
+                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}"
+                                     Value="">
 
-                        </Style.Triggers>
+                                    <Setter Property="Visibility"
+                                    Value="Visible"/>
 
-                    </Style>
-                </TextBlock.Style>
+                                </DataTrigger>
 
-            </TextBlock>
+                            </Style.Triggers>
+
+                        </Style>
+                    </TextBlock.Style>
+
+                </TextBlock>
+
+            </Grid>
+
+            <ComboBox x:Name="CreatureFilterBox"
+              Grid.Column="2"
+              Height="34"
+              VerticalAlignment="Top"
+              VerticalContentAlignment="Center"
+              SelectionChanged="CreatureFilterBox_SelectionChanged"/>
 
         </Grid>
-        
+                
         <TextBlock x:Name="CountText"
                Grid.Row="1"
                Margin="2,0,0,8"
@@ -85,14 +102,43 @@
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Espèce"
-                                Binding="{Binding Species}"
-                                Width="140"/>
+                <DataGridTemplateColumn Header="Espèce"
+                        Width="160">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
 
-                <DataGridTextColumn Header="Nom"
-                                    Binding="{Binding Name}"
-                                    Width="140"/>
+                                <Grid Width="24"
+                                        Height="24"
+                                        Margin="0,0,6,0">
 
+                                    <Image Source="{Binding IconPath}"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+
+                                    <Image Source="{Binding BadgePath}"
+                                            Width="10"
+                                            Height="10"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"/>
+
+                                </Grid>
+
+                                <TextBlock Text="{Binding Species}"
+                                            VerticalAlignment="Center"/>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Type"
+                    Binding="{Binding CategoryDisplay}"
+                    Width="140"/>
 
                 <DataGridTemplateColumn Header="Sexe"
                         Width="55">

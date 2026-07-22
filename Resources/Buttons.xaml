@@ -76,4 +76,108 @@
 
     </Style>
 
+    <!-- =========================
+     Guardian primary button
+     ========================= -->
+
+    <Style x:Key="GuardianPrimaryButtonStyle"
+       TargetType="Button">
+
+        <Setter Property="Height"
+            Value="44"/>
+
+        <Setter Property="MinWidth"
+            Value="150"/>
+
+        <Setter Property="Padding"
+            Value="18,8"/>
+
+        <Setter Property="Foreground"
+            Value="{StaticResource BrushTextPrimary}"/>
+
+        <Setter Property="Background"
+            Value="{StaticResource BrushInfo}"/>
+
+        <Setter Property="BorderBrush"
+            Value="{StaticResource BrushInfo}"/>
+
+        <Setter Property="BorderThickness"
+            Value="1"/>
+
+        <Setter Property="FontSize"
+            Value="{StaticResource FontSizeBodyLarge}"/>
+
+        <Setter Property="FontWeight"
+            Value="{StaticResource FontWeightSemiBold}"/>
+
+        <Setter Property="Cursor"
+            Value="Hand"/>
+
+        <Setter Property="HorizontalContentAlignment"
+            Value="Center"/>
+
+        <Setter Property="VerticalContentAlignment"
+            Value="Center"/>
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+
+                <ControlTemplate TargetType="Button">
+
+                    <Border x:Name="ButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{StaticResource RadiusMedium}"
+                        Padding="{TemplateBinding Padding}">
+
+                        <ContentPresenter
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="IsMouseOver"
+                             Value="True">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Opacity"
+                                Value="0.88"/>
+
+                        </Trigger>
+
+                        <Trigger Property="IsPressed"
+                             Value="True">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Opacity"
+                                Value="0.70"/>
+
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled"
+                             Value="False">
+
+                            <Setter TargetName="ButtonBorder"
+                                Property="Opacity"
+                                Value="0.40"/>
+
+                            <Setter Property="Cursor"
+                                Value="Arrow"/>
+
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+
+        </Setter>
+
+    </Style>
+
 </ResourceDictionary>
